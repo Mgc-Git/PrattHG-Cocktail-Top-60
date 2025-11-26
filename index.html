@@ -8,9 +8,12 @@
 </head>
 <body>
   <aside class="sidebar">
-    <h1>Top 60</h1>
-    <ol id="cocktail-list" class="cocktail-list" start="1"></ol>
-  </aside>
+  <h1 class="only-desktop">Top 60</h1>
+  <button id="toggle-top60" class="top60-btn only-mobile" aria-pressed="false" title="Expand/minimise Top 60">
+    Top 60 ▾
+  </button>
+  <ol id="cocktail-list" class="cocktail-list" start="1"></ol>
+</aside>
 
   <main class="content">
     <header class="toolbar">
@@ -63,6 +66,8 @@
               <option value="nick and nora">nick and nora</option>
               <option value="tiki">tiki</option>
               <option value="camping mug">camping mug</option>
+              <option value="wine glass">wine glass</option>
+              <option value="flute">flute</option>
             </select>
           </label>
         </fieldset>

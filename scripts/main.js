@@ -325,6 +325,23 @@ function bindUI(){
     sidebar?.scrollTo({ top: 0, behavior: scrollBehavior() });
   });
   toggleBackBtn();
+
+    // Mobile: expand/minimise the bottom list to half-screen
+  const toggleTop60 = document.getElementById('toggle-top60');
+  if (toggleTop60){
+    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+    const setHalf = (on) => {
+      document.body.classList.toggle('list-half', on);
+      toggleTop60.setAttribute('aria-pressed', String(on));
+      toggleTop60.textContent = on ? 'Top 60 ▴' : 'Top 60 ▾';
+    };
+    toggleTop60.addEventListener('click', () => setHalf(!document.body.classList.contains('list-half')));
+
+    // Ensure desktop always uses the left sidebar (no half mode)
+    window.addEventListener('resize', () => { if (!isMobile()) setHalf(false); });
+    // Initial state
+    setHalf(false);
+  }
 }
 bindUI();
 
