@@ -7,13 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <aside class="sidebar">
-  <h1 class="only-desktop">Top 60</h1>
-  <button id="toggle-top60" class="top60-btn only-mobile" aria-pressed="false" title="Expand/minimise Top 60">
-    Top 60 ▾
-  </button>
-  <ol id="cocktail-list" class="cocktail-list" start="1"></ol>
-</aside>
+  
 
   <main class="content">
     <header class="toolbar">
@@ -120,6 +114,14 @@
       <div id="result-details"></div>
     </section>
   </main>
+
+  <aside class="sidebar">
+    <h1 class="only-desktop">Top 60</h1>
+    <button id="toggle-top60" class="top60-btn only-mobile" aria-pressed="false" title="Expand/minimise Top 60">
+      Top 60 ▾
+    </button>
+    <ol id="cocktail-list" class="cocktail-list" start="1"></ol>
+  </aside>
 
   <!-- Back to top (mobile-only, shown when list is scrolled) -->
   <button id="back-to-top" aria-label="Back to top" title="Back to top">↑</button>

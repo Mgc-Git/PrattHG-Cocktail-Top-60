@@ -1,4 +1,4 @@
-:root{ /*----colour scheme----*/
+:root{
   --gap: 1rem;
   --card-radius: 12px;
 
@@ -9,19 +9,20 @@
   --text:#e8edf2;
   --muted:#9aa3af;
 
-  --primary:#ef4444;            /* Negroni red */
+  --primary:#ef4444;
   --primary-contrast:#1a1a1a;
-  --accent:#f59e0b;             /* orange twist */
+  --accent:#f59e0b;
 
   --good:#34d399;
   --bad:#f87171;
 }
 
+/* Mobile/desktop visibility helpers */
 .only-desktop { display: block; }
 .only-mobile  { display: none; }
-@media (max-width: 768px){
-  .only-desktop { display: none; }
-  .only-mobile  { display: inline-flex; }
+@media (max-width:768px){
+  .only-desktop { display:none; }
+  .only-mobile  { display:inline-flex; }
 }
 
 /* Base */
@@ -49,12 +50,11 @@ input[type="number"], input[type="text"], select{
   border:1px solid var(--border);
   border-radius:8px;
   background:#0f1217;
-  color:var(--text);
 }
 input:focus, select:focus{
   outline:2px solid color-mix(in srgb, var(--primary) 55%, white 0%);
   outline-offset:1px;
-  border-color: var(--primary);
+  border-color:var(--primary);
 }
 button{
   padding:.55rem .9rem;
@@ -73,7 +73,6 @@ button.primary{
 button.ghost{
   background:transparent;
   border:1px dashed var(--border);
-  color:var(--text);
 }
 
 /* Toolbar */
@@ -93,7 +92,6 @@ button.ghost{
 .sidebar{
   padding:1rem;
   background:var(--card);
-  border-right:1px solid var(--border);
 }
 .sidebar h1{
   margin:0 0 .5rem 0;
@@ -126,8 +124,7 @@ button.ghost{
 .result .good{ color:var(--good); }
 .result .bad{ color:var(--bad); }
 
-/* ---------- Responsive layout ---------- */
-/* Desktop: sidebar left, sticky; content right */
+/* ---------- Desktop layout: sidebar left (sticky), content right ---------- */
 @media (min-width:769px){
   body{
     display:grid;
@@ -141,64 +138,43 @@ button.ghost{
     grid-area:sidebar;
     position:sticky; top:0;
     height:100vh; overflow:auto;
+    border-right:1px solid var(--border);
   }
   .content{ grid-area:content; padding:1rem; }
 }
 
-/* Mobile: content first, sidebar bottom */
+/* ---------- Mobile layout: stacked (content first, list after) ---------- */
 @media (max-width:768px){
-  /* Compact default: big form, smaller list */
   body{
     display:grid;
     grid-template-columns:1fr;
-    grid-template-rows: minmax(60svh, 1fr) minmax(24svh, 36svh); /* was: 1fr minmax(45svh,75svh) */
+    grid-template-rows:minmax(60svh,1fr) minmax(24svh,36svh);
     grid-template-areas:"content" "sidebar";
-    min-height:100vh; min-height:100svh; min-height:100dvh;
+    min-height:100dvh;
   }
-  .content{ 
-    grid-area: content;
-    position: relative;   
-    z-index: 1;           
-    padding: .75rem;
-    min-height: 0;
-}
-
+  .content{
+    grid-area:content; padding:.75rem; min-height:0;
+    position:relative; z-index:1;
+  }
   .sidebar{
-    grid-area: sidebar;
-    position: sticky;         
-    bottom: 0;
-    top: auto;
-    align-self: end;
-
-    z-index: 0;
-
-    border-top: 1px solid var(--border);
-    padding: .75rem;
-    background: var(--card);
-
-    -webkit-overflow-scrolling: touch;
-    overflow: auto;
-    
-    padding-bottom: calc(.75rem + env(safe-area-inset-bottom));
-    scrollbar-gutter: stable;
-    overscroll-behavior: contain;
-    max-height: 36svh;                   
-    transition: max-height .25s ease;
+    grid-area:sidebar; z-index:0;
+    border-top:1px solid var(--border);
+    padding:.75rem;
+    background:var(--card);
+    overflow:auto; -webkit-overflow-scrolling:touch;
+    max-height:36svh;
+    padding-bottom:calc(.75rem + env(safe-area-inset-bottom));
+    transition:max-height .25s ease;
   }
-
   .toolbar{ position:sticky; top:0; z-index:5; }
   .grid{ grid-template-columns:1fr; }
   .grid .row{ grid-template-columns:90px 1fr auto; }
 
-  /* Half-screen list when toggled via <body class="list-half"> */
-  body.list-half{
-    grid-template-rows: minmax(50svh, 1fr) 50svh;
-  }
-  body.list-half .sidebar{
-    max-height:50svh;
-  }
+  /* Half-screen toggle */
+  body.list-half{ grid-template-rows:minmax(50svh,1fr) 50svh; }
+  body.list-half .sidebar{ max-height:50svh; }
 
-  /* Mobile toggle button (shown only on mobile) */
+  /* Mobile-only toggle button */
   .top60-btn{
     align-items:center; gap:.4rem;
     font-weight:700; letter-spacing:.5px;
@@ -208,7 +184,7 @@ button.ghost{
   }
 }
 
-/* ---------- Back-to-top button ---------- */
+/* Back-to-top */
 #back-to-top{
   position:fixed; right:1rem; bottom:1rem;
   display:none;
@@ -218,9 +194,9 @@ button.ghost{
   box-shadow:0 6px 18px rgba(0,0,0,.35);
   background:var(--primary); color:var(--primary-contrast);
   cursor:pointer;
+  z-index:20;
 }
 #back-to-top.show{ display:inline-flex; }
-/* Desktop hide */
 @media (min-width:769px){ #back-to-top{ display:none !important; } }
 
 /* Scrollbar (WebKit) */
