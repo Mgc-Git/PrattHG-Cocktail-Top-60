@@ -326,22 +326,31 @@ function bindUI(){
   });
   toggleBackBtn();
 
-    // Mobile: expand/minimise the bottom list to half-screen
-  const toggleTop60 = document.getElementById('toggle-top60');
-  if (toggleTop60){
-    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
-    const setHalf = (on) => {
-      document.body.classList.toggle('list-half', on);
-      toggleTop60.setAttribute('aria-pressed', String(on));
-      toggleTop60.textContent = on ? 'Top 60 ▴' : 'Top 60 ▾';
-    };
-    toggleTop60.addEventListener('click', () => setHalf(!document.body.classList.contains('list-half')));
+   // Drawer open/close (mobile)
+  const drawerBtn = document.getElementById('open-drawer');
+  const backdrop  = document.getElementById('drawer-backdrop');
 
-    // Ensure desktop always uses the left sidebar (no half mode)
-    window.addEventListener('resize', () => { if (!isMobile()) setHalf(false); });
-    // Initial state
-    setHalf(false);
-  }
+  const openDrawer = (open) => {
+    document.body.classList.toggle('drawer-open', open);
+    drawerBtn?.setAttribute('aria-expanded', String(open));
+    if (backdrop) backdrop.hidden = !open;
+  };
+
+  drawerBtn?.addEventListener('click', () => {
+    openDrawer(!document.body.classList.contains('drawer-open'));
+  });
+
+  backdrop?.addEventListener('click', () => openDrawer(false));
+
+  // Close on ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') openDrawer(false);
+  });
+
+  // Ensure it’s closed when switching to desktop
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width:769px)').matches) openDrawer(false);
+  });
 }
 bindUI();
 
