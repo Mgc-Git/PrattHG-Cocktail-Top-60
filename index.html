@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Top 60 Cocktails — Training Quiz</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h1>Top 60</h1>
+    <ol id="cocktail-list" class="cocktail-list" start="1"></ol>
+  </aside>
+
+  <main class="content">
+    <header class="toolbar">
+      <div class="nav">
+        <button id="prev-btn" type="button" title="Previous">◀</button>
+        <div id="title">Cocktail 1</div>
+        <button id="next-btn" type="button" title="Next">▶</button>
+      </div>
+      <div class="index">#<span id="index-label">1</span>/60</div>
+    </header>
+
+    <section id="form-area" class="card">
+      <form id="quiz-form" autocomplete="off">
+        <fieldset class="grid">
+          <legend>Alcohol ingredients (ml + name)</legend>
+          <div id="alcohol-rows"></div>
+          <div class="row-controls">
+            <button id="add-row" type="button">+ Row</button>
+            <button id="reset-rows" type="button">Reset Rows</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="grid">
+          <legend>Bitters</legend>
+          <label>
+            Type
+            <select id="bitters">
+              <option value="none">none</option>
+              <option value="angostura bitters">angostura bitters</option>
+              <option value="orange bitters">orange bitters</option>
+            </select>
+          </label>
+          <label>
+            Dashes
+            <input id="dashes" type="number" min="0" step="1" value="0" />
+          </label>
+          <div id="bitters-note" class="note" hidden></div>
+        </fieldset>
+
+        <fieldset class="grid">
+          <legend>Glassware / Ice</legend>
+          <label>
+            Glassware
+            <select id="ice">
+              <option value="none">none</option>
+              <option value="regular">regular</option>
+              <option value="crushed">crushed</option>
+              <option value="large">large</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="grid">
+          <legend>Method & Strain</legend>
+          <div class="radio-group">
+            <span>Shaken/Stirred</span>
+            <label><input type="radio" name="method" value="shaken" checked /> Shaken</label>
+            <label><input type="radio" name="method" value="stirred" /> Stirred</label>
+          </div>
+          <div class="radio-group">
+            <span>Strain</span>
+            <label><input type="radio" name="strain" value="single" checked /> Single strained</label>
+            <label><input type="radio" name="strain" value="double" /> Double strained</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="grid">
+          <legend>Garnish</legend>
+          <input id="garnish" type="text" placeholder="e.g., Orange twist" />
+        </fieldset>
+
+        <div class="actions">
+          <button id="submit-btn" type="submit">Submit Answer</button>
+          <button id="show-answer" type="button" class="ghost">Show Correct</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="result" class="card result" hidden>
+      <div id="result-status"></div>
+      <div id="result-details"></div>
+    </section>
+  </main>
+
+  <script type="text/javascript" src="wasm/app.js"></script>
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>

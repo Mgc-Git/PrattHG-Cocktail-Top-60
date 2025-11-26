@@ -1,0 +1,30 @@
+:root{--bg:#0b0e12;--panel:#121821;--muted:#a6b0bf;--text:#e8edf5;--accent:#7fd;--bad:#ff6b6b;--good:#5bd176}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,Segoe UI,Roboto,Inter,Arial}
+.sidebar{position:fixed;inset:0 auto 0 0;width:280px;background:linear-gradient(180deg,#0f141c,#0b0e12);border-right:1px solid #1e2633;padding:20px;overflow:auto}
+.sidebar h1{margin:0 0 12px;font-size:20px;letter-spacing:.5px}
+.cocktail-list{list-style:decimal;margin:0;padding-left:20px;display:grid;gap:6px}
+.cocktail-list li{cursor:pointer;padding:6px 8px;border-radius:6px;color:var(--muted)}
+.cocktail-list li.active,.cocktail-list li:hover{background:#1b2431;color:var(--text)}
+.content{margin-left:280px;min-height:100%;padding:20px;display:grid;gap:20px}
+.toolbar{display:flex;justify-content:space-between;align-items:center}
+.nav{display:flex;align-items:center;gap:12px}
+.nav #title{font-weight:600}
+.toolbar button{background:#1b2431;color:var(--text);border:1px solid #2c374a;border-radius:6px;padding:6px 10px;cursor:pointer}
+.toolbar button:hover{border-color:#3c4b63}
+.index{color:var(--muted)}
+.card{background:var(--panel);border:1px solid #1e2633;border-radius:10px;padding:16px}
+.grid{display:grid;gap:10px;margin-bottom:14px}
+.grid legend{color:var(--muted);font-size:13px;padding:0 4px}
+.grid label{display:grid;gap:6px}
+input[type="text"],input[type="number"],select{background:#0f141c;color:var(--text);border:1px solid #2c374a;border-radius:8px;padding:10px}
+.radio-group{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.row{display:grid;grid-template-columns:100px 1fr auto;gap:8px;align-items:center}
+.row .remove{background:transparent;border:1px dashed #39475f;color:#8f9bb1;border-radius:8px;padding:8px;cursor:pointer}
+.row-controls{display:flex;gap:8px}
+.actions{display:flex;gap:8px;justify-content:flex-end}
+.actions .ghost{background:transparent;border:1px dashed #39475f}
+.result .good{color:var(--good)}
+.result .bad{color:var(--bad)}
+.note{font-size:12px;color:#fbd38d}
+@media (max-width: 860px){.sidebar{position:static;width:auto}.content{margin:0}}

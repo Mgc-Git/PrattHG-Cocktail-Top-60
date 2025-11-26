@@ -1,0 +1,30 @@
+name: Build & Deploy (GitHub Pages)
+on:
+  push: { branches: [ "main" ] }
+  workflow_dispatch:
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: "pages", cancel-in-progress: true }
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: emscripten/emsdk:3.1.65
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build WebAssembly
+        run: |
+          emcc wasm/app.cpp -O3 -s MODULARIZE=1 -s EXPORT_NAME=Module -s ENVIRONMENT=web -o wasm/app.js
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p dist
+          cp -r index.html styles.css scripts wasm dist/
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with: { path: dist }
+  deploy:
+    environment: { name: github-pages, url: ${{ steps.deployment.outputs.page_url }} }
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
