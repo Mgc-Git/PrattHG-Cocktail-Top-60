@@ -1,7 +1,9 @@
 name: Build & Deploy (GitHub Pages)
+
 on:
-  push: { branches: [ "main" ] }
+  push: { branches: ["main"] }
   workflow_dispatch:
+
 permissions: { contents: read, pages: write, id-token: write }
 concurrency: { group: "pages", cancel-in-progress: true }
 
@@ -11,23 +13,27 @@ jobs:
     container: emscripten/emsdk:3.1.65
     steps:
       - uses: actions/checkout@v4
+
       - name: Build WebAssembly
         run: |
           emcc wasm/app.cpp -O3 -s MODULARIZE=1 -s EXPORT_NAME=Module -s ENVIRONMENT=web \
             -s EXPORTED_FUNCTIONS='["_getCocktailNamesJSON","_getAnswerKeyJSON"]' \
             -s EXPORTED_RUNTIME_METHODS='["cwrap"]' \
             -o wasm/app.js
+          echo "Built files:" && ls -l wasm
 
       - name: Prepare Pages artifact
         run: |
           mkdir -p dist
           cp -r index.html styles.css scripts wasm dist/
-          touch dist/.nojekyll  # disable Jekyll so /wasm/* serves as-is
+          touch dist/.nojekyll
+          echo "Artifact layout:" && find dist -maxdepth 3 -type f | sort
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with: { path: dist }
+
   deploy:
-    environment: { name: github-pages, url: ${{ steps.deployment.outputs.page_url }} }
     needs: build
     runs-on: ubuntu-latest
     steps:
