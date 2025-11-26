@@ -104,8 +104,17 @@ function renderAlcoholRows(count, preset=[]) {
   }
 }
 
+function snapshotAlcoholRows(){
+  const rows = [...document.querySelectorAll('#alcohol-rows .row')];
+  return rows.map(r => ({
+    // keep raw values; don't coerce to number yet
+    ml: r.querySelector('.ml').value,
+    name: r.querySelector('.name').value
+  }));
+}
+
 function collectAlcoholRows(){
-  const rows = [...$$('#alcohol-rows .row')];
+  const rows = [...document.querySelectorAll('#alcohol-rows .row')];
   return rows.map(r=>{
     const ml = parseInt(r.querySelector('.ml').value,10) || 0;
     const name = r.querySelector('.name').value.trim();
@@ -114,33 +123,31 @@ function collectAlcoholRows(){
 }
 
 function applyKeyToForm(key){
-  $('#title').textContent = key.name;
-  $('#index-label').textContent = (state.index+1);
+  document.querySelector('#title').textContent = key.name;
+  document.querySelector('#index-label').textContent = (state.index+1);
 
-  const note = $('#bitters-note');
+  const note = document.querySelector('#bitters-note');
   if (key.bitters === 'peychaud’s bitters' || key.bitters === "peychaud's bitters") {
     note.hidden = false;
     note.textContent = 'Note: correct bitters is Peychaud’s (not available in dropdown).';
   } else { note.hidden = true; }
 
-  renderAlcoholRows(key.alcohols.length);
+  renderAlcoholRows(1); // start with 1 blank row
 
-  // Defaults
-  $('#bitters').value = 'none';
-  $('#dashes').value = 0;
-  if ($('#glass'))   $('#glass').value = '';     // no prefill
-  if ($('#iceType')) $('#iceType').value = key.ice;
+  document.querySelector('#bitters').value = 'none';
+  document.querySelector('#dashes').value = 0;
+  if (document.querySelector('#glass'))   document.querySelector('#glass').value = '';
+  if (document.querySelector('#iceType')) document.querySelector('#iceType').value = key.ice;
 
   (document.querySelector(`input[name="method"][value="${key.method}"]`)
     || document.querySelector(`input[name="method"][value="shaken"]`))?.click();
-
   (document.querySelector(`input[name="strain"][value="${key.strain}"]`)
     || document.querySelector(`input[name="strain"][value="single"]`))?.click();
 
-  const mud = $('#Muddled'); if (mud) mud.checked = false;
+  const mud = document.querySelector('#Muddled'); if (mud) mud.checked = false;
 
-  $('#garnish').value = '';
-  $('#result').hidden = true;
+  document.querySelector('#garnish').value = '';
+  document.querySelector('#result').hidden = true;
 }
 
 function arraysEqualAsMultisets(user, expected){
@@ -285,16 +292,21 @@ function gotoIndex(i){
 }
 
 function bindUI(){
-  $('#prev-btn').onclick = () => gotoIndex(state.index - 1);
-  $('#next-btn').onclick = () => gotoIndex(state.index + 1);
-  $('#add-row').onclick = () => {
-    renderAlcoholRows(collectAlcoholRows().length + 1, collectAlcoholRows());
-  };
-  $('#reset-rows').onclick = () => renderAlcoholRows(state.key.alcohols.length);
-  $('#show-answer').onclick = () => showResult(false, ['(Revealed by user)'], state.key);
-  $('#quiz-form').onsubmit = (e) => { e.preventDefault(); compareAgainstKey(state.key); };
+  document.querySelector('#prev-btn').onclick = () => gotoIndex(state.index - 1);
+  document.querySelector('#next-btn').onclick = () => gotoIndex(state.index + 1);
 
-  // Back-to-top: show on mobile when scrolled; click scrolls page + sidebar to top
+  // FIXED: add one row regardless of whether current rows are empty
+  document.querySelector('#add-row').onclick = () => {
+    const snap = snapshotAlcoholRows();           // keeps partial inputs
+    renderAlcoholRows(snap.length + 1, snap);     // add one more
+  };
+
+  // Reset → exactly 1 blank row
+  document.querySelector('#reset-rows').onclick = () => renderAlcoholRows(1);
+
+  document.querySelector('#show-answer').onclick = () => showResult(false, ['(Revealed by user)'], state.key);
+  document.querySelector('#quiz-form').onsubmit = (e) => { e.preventDefault(); compareAgainstKey(state.key); };
+
   const backBtn = document.getElementById('back-to-top');
   const sidebar = document.querySelector('.sidebar');
   const toggleBackBtn = () => {
@@ -312,7 +324,7 @@ function bindUI(){
     window.scrollTo({ top: 0, behavior: scrollBehavior() });
     sidebar?.scrollTo({ top: 0, behavior: scrollBehavior() });
   });
-  toggleBackBtn(); // initial
+  toggleBackBtn();
 }
 bindUI();
 

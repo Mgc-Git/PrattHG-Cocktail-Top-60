@@ -11,12 +11,12 @@ body {
   margin: 0;
   font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
   color: #111;
-  background: #fafafa;
+  background: #2c3549;
 }
 
 /* Cards, inputs */
 .card {
-  background: #fff;
+  background: #444068;
   border: 1px solid rgba(0,0,0,.06);
   border-radius: var(--card-radius);
   padding: 1rem;
@@ -34,7 +34,7 @@ button {
   padding: .55rem .9rem;
   border-radius: 10px;
   border: 1px solid rgba(0,0,0,.1);
-  background: #fff;
+  background: #444068;
   cursor: pointer;
 }
 button.ghost {
@@ -61,7 +61,7 @@ button.ghost {
 /* Sidebar list */
 .sidebar {
   padding: 1rem;
-  background: #fff;
+  background: #444068;
   border-right: 1px solid rgba(0,0,0,.06);
 }
 .sidebar h1 {
