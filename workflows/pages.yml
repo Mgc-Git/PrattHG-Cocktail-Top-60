@@ -13,7 +13,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build WebAssembly
         run: |
-          emcc wasm/app.cpp -O3 -s MODULARIZE=1 -s EXPORT_NAME=Module -s ENVIRONMENT=web -o wasm/app.js
+          emcc wasm/app.cpp -O3 -s MODULARIZE=1 -s EXPORT_NAME=Module -s ENVIRONMENT=web \
+            -s EXPORTED_FUNCTIONS='["_getCocktailNamesJSON","_getAnswerKeyJSON"]' \
+            -s EXPORTED_RUNTIME_METHODS='["cwrap"]' \
+            -o wasm/app.js  
       - name: Prepare Pages artifact
         run: |
           mkdir -p dist
