@@ -25,7 +25,7 @@
     <section id="form-area" class="card">
       <form id="quiz-form" autocomplete="off">
         <fieldset class="grid">
-          <legend>Alcohol ingredients (ml + name)</legend>
+          <legend><b>Alcohol ingredients (ml + name)</b></legend>
           <div id="alcohol-rows"></div>
           <div class="row-controls">
             <button id="add-row" type="button">+ Row</button>
@@ -34,9 +34,9 @@
         </fieldset>
 
         <fieldset class="grid">
-          <legend>Bitters</legend>
+          <legend><b>Bitters</b></legend>
           <label>
-            Type
+            <b>Type</b>
             <select id="bitters">
               <option value="none">none</option>
               <option value="angostura bitters">angostura bitters</option>
@@ -44,16 +44,16 @@
             </select>
           </label>
           <label>
-            Dashes
+            <b>Dashes</b>
             <input id="dashes" type="number" min="0" step="1" value="0" />
           </label>
           <div id="bitters-note" class="note" hidden></div>
         </fieldset>
 
         <fieldset class="grid">
-          <legend>Glassware</legend>
+          <legend><b>Glassware</b></legend>
           <label>
-            Glass type
+            <b>Glass type</b>
             <select id="glass">
               <option value="">(choose)</option>
               <option value="coupette">coupette</option>
@@ -68,9 +68,9 @@
         </fieldset>
 
         <fieldset class="grid">
-          <legend>Ice</legend>
+          <legend><b>Ice</b></legend>
           <label>
-            Ice type
+            <b>Ice type</b>
             <select id="iceType">
               <option value="none">none</option>
               <option value="regular">regular</option>
@@ -81,16 +81,16 @@
         </fieldset>
 
         <fieldset class="grid">
-          <legend>Method & Strain</legend>
+          <legend><b>Method & Strain</b></legend>
           <div class="radio-group">
-            <span>Method</span>
+            <span><b>Method</b></span>
             <label><input type="radio" name="method" value="shaken" checked /> Shaken</label>
             <label><input type="radio" name="method" value="stirred" /> Stirred</label>
             <label><input type="radio" name="method" value="build" /> Build in glass</label>
             <label><input type="checkbox" id="Muddled" /> Muddled (Optional)</label>
           </div>
           <div class="radio-group">
-            <span>Strain</span>
+            <span><b>Strain</b></span>
             <label><input type="radio" name="strain" value="single" checked /> Single strained</label>
             <label><input type="radio" name="strain" value="double" /> Double strained</label>
             <label><input type="radio" name="strain" value="dump" /> Dump</label>
@@ -99,7 +99,7 @@
         </fieldset>
 
         <fieldset class="grid">
-          <legend>Garnish</legend>
+          <legend><b>Garnish</b></legend>
           <input id="garnish" type="text" placeholder="e.g., Orange twist" />
         </fieldset>
 
