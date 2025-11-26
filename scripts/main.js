@@ -293,6 +293,26 @@ function bindUI(){
   $('#reset-rows').onclick = () => renderAlcoholRows(state.key.alcohols.length);
   $('#show-answer').onclick = () => showResult(false, ['(Revealed by user)'], state.key);
   $('#quiz-form').onsubmit = (e) => { e.preventDefault(); compareAgainstKey(state.key); };
+
+  // Back-to-top: show on mobile when scrolled; click scrolls page + sidebar to top
+  const backBtn = document.getElementById('back-to-top');
+  const sidebar = document.querySelector('.sidebar');
+  const toggleBackBtn = () => {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (!isMobile) { backBtn?.classList.remove('show'); return; }
+    const pageScrolled = (document.documentElement.scrollTop || document.body.scrollTop) > 80;
+    const listScrolled = sidebar && sidebar.scrollTop > 80;
+    backBtn?.classList.toggle('show', pageScrolled || listScrolled);
+  };
+  const scrollBehavior = () => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+
+  window.addEventListener('scroll', toggleBackBtn, { passive: true });
+  sidebar?.addEventListener('scroll', toggleBackBtn, { passive: true });
+  backBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: scrollBehavior() });
+    sidebar?.scrollTo({ top: 0, behavior: scrollBehavior() });
+  });
+  toggleBackBtn(); // initial
 }
 bindUI();
 
