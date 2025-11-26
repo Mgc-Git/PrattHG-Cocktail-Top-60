@@ -16,11 +16,13 @@ jobs:
           emcc wasm/app.cpp -O3 -s MODULARIZE=1 -s EXPORT_NAME=Module -s ENVIRONMENT=web \
             -s EXPORTED_FUNCTIONS='["_getCocktailNamesJSON","_getAnswerKeyJSON"]' \
             -s EXPORTED_RUNTIME_METHODS='["cwrap"]' \
-            -o wasm/app.js  
+            -o wasm/app.js
+
       - name: Prepare Pages artifact
         run: |
           mkdir -p dist
           cp -r index.html styles.css scripts wasm dist/
+          touch dist/.nojekyll  # disable Jekyll so /wasm/* serves as-is
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with: { path: dist }
