@@ -11,6 +11,14 @@
 
   <main class="content">
     <header class="toolbar">
+      <button id="open-drawer"
+              class="drawer-btn only-mobile"
+              aria-controls="mobile-drawer"
+              aria-expanded="false"
+              title="Open Top 60">
+        ☰ Top 60
+      </button>
+
       <div class="nav">
         <button id="prev-btn" type="button" title="Previous">◀</button>
         <div id="title">Cocktail 1</div>
@@ -115,13 +123,12 @@
     </section>
   </main>
 
-  <aside class="sidebar">
+  <aside id="mobile-drawer" class="sidebar">
     <h1 class="only-desktop">Top 60</h1>
-    <button id="toggle-top60" class="top60-btn only-mobile" aria-pressed="false" title="Expand/minimise Top 60">
-      Top 60 ▾
-    </button>
     <ol id="cocktail-list" class="cocktail-list" start="1"></ol>
   </aside>
+
+  <div id="drawer-backdrop" class="drawer-backdrop only-mobile" hidden></div>
 
   <!-- Back to top (mobile-only, shown when list is scrolled) -->
   <button id="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
