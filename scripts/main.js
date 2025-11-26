@@ -2,11 +2,92 @@ const $ = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
 const state = { index: 0, names: [], key: null };
 
-function norm(s){ return (s||'').toLowerCase().replace(/[^\w\s]/g,'').replace(/\s+/g,' ').trim(); }
+function norm(s){ return (s||'').toLowerCase().replace(/[^\w\s&/-]/g,'').replace(/\s+/g,' ').trim(); }
 function sameText(a,b){ return norm(a) === norm(b); }
 
+// Glassware grading map (editable)
+const GLASS_KEY = {
+  // coupes / coupettes / n&n
+  "ESPRESSO MARTINI": ["coupe"],
+  "MARTINI": ["nick and nora","coupette"],
+  "DAIQUIRI": ["coupette"],
+  "DAIQUIRI (HEMINGWAY)": ["coupette"],
+  "LAST WORD": ["coupette","nick and nora"],
+  "AVIATION": ["coupette"],
+  "COSMOPOLITAN": ["nick and nora","coupette"],
+  "CLOVER CLUB": ["coupe"],
+  "GRASSHOPPER": ["coupette"],
+  "JAPANESE SLIPPER": ["nick and nora","coupette"],
+  "SOUTHSIDE": ["nick and nora","coupette"],
+  "CORPSE REVIVER #2": ["coupette"],
+  "SLOE GIN SOUR": ["coupe"],
+  "GIMLET": ["coupette"],
+  "GIN FIZZ": ["collins"],
+  "MANHATTAN": ["coupette"],
+
+  // flute / wine glass
+  "FRENCH 75": ["flute"],
+  "APEROL SPRITZ": ["wine glass"],
+  "LIMONCELLO SPRITZ": ["wine glass"],
+  "ELDERFLOWER SPRITZ": ["wine glass"],
+
+  // rocks
+  "NEGRONI": ["rocks"],
+  "OLD FASHIONED": ["rocks"],
+  "BOULEVARDIER": ["rocks"],
+  "SAZERAC (Original)": ["rocks"],
+  "SAZERAC (New Orleans)": ["rocks"],
+  "SAZERAC (New York)": ["rocks"],
+  "NEW YORK SOUR": ["rocks"],
+  "BRAMBLE": ["rocks"],
+  "WHISKY SOUR": ["rocks"],
+  "BLACK & WHITE RUSSIAN": ["rocks"],
+  "RUSTY NAIL": ["rocks"],
+
+  // collins/highball
+  "TOM COLLINS": ["collins"],
+  "PALOMA": ["collins"],
+  "LONG ISLAND ICED TEA": ["collins"],
+  "DARK AND STORMY": ["collins"],
+  "MAI TAI": ["collins"],
+  "PINA COLADA": ["collins"],
+  "PAINKILLER": ["collins"],
+  "PI YI": ["collins"],
+
+  // tiki
+  "ZOMBIE": ["tiki"],
+
+  // built muddled/crushed
+  "MOJITO": ["collins"],
+  "CAIPIRINHA": ["rocks"],
+  "CAPRIOSKA": ["rocks"],
+
+  // mule
+  "MOSCOW MULE": ["camping mug"],
+
+  // slings etc.
+  "SINGAPORE SLING": ["collins"],
+};
+
+function normalizeGlass(v){
+  const x = norm(v);
+  if (x === "n&n" || x === "nick n nora" || x === "nick nora") return "nick and nora";
+  return x;
+}
+function glassMatches(user, allowed){
+  const u = normalizeGlass(user);
+  return allowed.some(opt => normalizeGlass(opt) === u);
+}
+
+// Dynamic total label
+function updateTotalLabel() {
+  const total = state.names.length || 0;
+  const indexHdr = document.querySelector('.index');
+  if (indexHdr) indexHdr.innerHTML = `#<span id="index-label">${state.index+1}</span>/${total}`;
+}
+
+// Build rows
 function renderAlcoholRows(count, preset=[]) {
-  // Creates ml+name rows (count defaults to key.alcohols.length)
   const host = $('#alcohol-rows');
   host.innerHTML = '';
   const n = Math.max(count, preset.length || 0, 1);
@@ -33,7 +114,6 @@ function collectAlcoholRows(){
 }
 
 function applyKeyToForm(key){
-  // Reset UI for the selected cocktail
   $('#title').textContent = key.name;
   $('#index-label').textContent = (state.index+1);
 
@@ -48,20 +128,15 @@ function applyKeyToForm(key){
   // Defaults
   $('#bitters').value = 'none';
   $('#dashes').value = 0;
-
-  // Glassware (captured, not graded) + Ice (graded)
-  if ($('#glass'))   $('#glass').value = '';
+  if ($('#glass'))   $('#glass').value = '';     // no prefill
   if ($('#iceType')) $('#iceType').value = key.ice;
 
-  // Method radios: key may be shaken|stirred|build
   (document.querySelector(`input[name="method"][value="${key.method}"]`)
     || document.querySelector(`input[name="method"][value="shaken"]`))?.click();
 
-  // Strain radios: key may be single|double|dump|none|na (currently your list uses single/double)
   (document.querySelector(`input[name="strain"][value="${key.strain}"]`)
     || document.querySelector(`input[name="strain"][value="single"]`))?.click();
 
-  // Muddled (optional)
   const mud = $('#Muddled'); if (mud) mud.checked = false;
 
   $('#garnish').value = '';
@@ -98,9 +173,17 @@ function showResult(ok, diffs, key){
     lines.push(`<hr>`);
     lines.push(`<div><strong>Correct alcohols:</strong> ${alcLines || 'None'}</div>`);
     lines.push(`<div><strong>Bitters:</strong> ${key.bitters} ${key.dashes?`(${key.dashes} dashes)`:''}</div>`);
-    lines.push(`<div><strong>Glassware:</strong> <em>not checked</em></div>`);
+
+    const chosenGlass = $('#glass')?.value || '(none)';
+    const allowed = GLASS_KEY[key.name];
+    if (allowed && allowed.length){
+      lines.push(`<div><strong>Glassware:</strong> expected ${allowed.join(' / ')}, you chose ${chosenGlass}</div>`);
+    } else {
+      lines.push(`<div><strong>Glassware:</strong> ${chosenGlass} <em>(not graded for this drink)</em></div>`);
+    }
+
     lines.push(`<div><strong>Ice:</strong> ${key.ice}</div>`);
-    lines.push(`<div><strong>Method:</strong> ${key.method}, <strong>Strain:</strong> ${key.strain || 'None'}</div>`);
+    lines.push(`<div><strong>Method:</strong> ${key.method}, <strong>Strain:</strong> ${key.strain || 'none'}</div>`);
     if (!key.skipGarnishCheck) lines.push(`<div><strong>Garnish:</strong> ${(key.garnish&&key.garnish.length)? key.garnish.join(' / ') : 'None'}</div>`);
     else lines.push(`<div><strong>Garnish:</strong> varies (accept any)</div>`);
   }
@@ -129,22 +212,29 @@ function compareAgainstKey(key){
     if ((key.dashes||0) !== userDashes) diffs.push(`Dashes should be ${key.dashes||0}.`);
   }
 
-  // Glassware (captured, not graded)
+  // Glassware (graded if we have an answer)
   const userGlass = $('#glass')?.value || '';
+  const allowed = GLASS_KEY[key.name];
+  if (allowed && allowed.length){
+    if (!userGlass) diffs.push('Select a glass type.');
+    else if (!glassMatches(userGlass, allowed)) {
+      diffs.push(`Glassware should be ${allowed.join(' / ')}.`);
+    }
+  }
 
-  // Ice (graded)
+  // Ice
   const userIce = $('#iceType')?.value || 'none';
   if (!sameText(userIce, key.ice)) diffs.push(`Ice should be "${key.ice}".`);
 
-  // Method (graded) — exact: shaken|stirred|build
+  // Method
   const userMethod = document.querySelector('input[name="method"]:checked').value;
   if (!sameText(userMethod, key.method)) diffs.push(`Method should be "${key.method}".`);
 
-  // Strain (graded) — exact: single|double|dump|none|na
+  // Strain
   const userStrain = document.querySelector('input[name="strain"]:checked').value;
   if (!sameText(userStrain, key.strain)) diffs.push(`Strain should be "${key.strain || 'none'}".`);
 
-  // Muddled (optional capture; not graded)
+  // Muddled (optional, not graded)
   const muddled = $('#Muddled')?.checked || false;
 
   // Garnish
@@ -158,6 +248,7 @@ function compareAgainstKey(key){
   showResult(ok, diffs, key);
 }
 
+// Load names and render
 async function loadNamesAndRender(Module){
   state.getNames = Module.cwrap('getCocktailNamesJSON','string',[]);
   state.getKey   = Module.cwrap('getAnswerKeyJSON','string',['number']);
@@ -165,13 +256,15 @@ async function loadNamesAndRender(Module){
   const names = JSON.parse(state.getNames() || "[]");
   state.names = names;
 
-  const list = $('#cocktail-list'); list.innerHTML = '';
+  const list = $('#cocktail-list');
+  list.innerHTML = '';
   names.forEach((n, i) => {
     const li = document.createElement('li');
     li.textContent = n;
     li.onclick = () => gotoIndex(i);
     list.appendChild(li);
   });
+  updateTotalLabel();
   gotoIndex(0);
 }
 
@@ -182,11 +275,13 @@ function setActiveListItem(){
 }
 
 function gotoIndex(i){
-  state.index = ( (i%60)+60 ) % 60;
+  const total = state.names.length || 1;
+  state.index = ((i % total) + total) % total;
   setActiveListItem();
   const key = JSON.parse(state.getKey(state.index));
   state.key = key;
   applyKeyToForm(key);
+  updateTotalLabel();
 }
 
 function bindUI(){
@@ -200,6 +295,10 @@ function bindUI(){
   $('#quiz-form').onsubmit = (e) => { e.preventDefault(); compareAgainstKey(state.key); };
 }
 bindUI();
+
+// Guard submit until WASM is ready
+const submitBtn = document.getElementById('submit-btn');
+if (submitBtn) submitBtn.disabled = true;
 
 if (window.Module){
   window.Module().then((Module) => {
