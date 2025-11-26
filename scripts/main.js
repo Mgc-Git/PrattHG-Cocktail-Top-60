@@ -1,3 +1,4 @@
+// ===== helpers =====
 const $ = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
 const state = { index: 0, names: [], key: null };
@@ -5,9 +6,8 @@ const state = { index: 0, names: [], key: null };
 function norm(s){ return (s||'').toLowerCase().replace(/[^\w\s&/-]/g,'').replace(/\s+/g,' ').trim(); }
 function sameText(a,b){ return norm(a) === norm(b); }
 
-// Glassware grading map (editable)
+// ===== GLASS KEY (grading map) =====
 const GLASS_KEY = {
-  // coupes / coupettes / n&n
   "ESPRESSO MARTINI": ["coupe"],
   "MARTINI": ["nick and nora","coupette"],
   "DAIQUIRI": ["coupette"],
@@ -25,13 +25,11 @@ const GLASS_KEY = {
   "GIN FIZZ": ["collins"],
   "MANHATTAN": ["coupette"],
 
-  // flute / wine glass
   "FRENCH 75": ["flute"],
   "APEROL SPRITZ": ["wine glass"],
   "LIMONCELLO SPRITZ": ["wine glass"],
   "ELDERFLOWER SPRITZ": ["wine glass"],
 
-  // rocks
   "NEGRONI": ["rocks"],
   "OLD FASHIONED": ["rocks"],
   "BOULEVARDIER": ["rocks"],
@@ -44,7 +42,6 @@ const GLASS_KEY = {
   "BLACK & WHITE RUSSIAN": ["rocks"],
   "RUSTY NAIL": ["rocks"],
 
-  // collins/highball
   "TOM COLLINS": ["collins"],
   "PALOMA": ["collins"],
   "LONG ISLAND ICED TEA": ["collins"],
@@ -54,18 +51,13 @@ const GLASS_KEY = {
   "PAINKILLER": ["collins"],
   "PI YI": ["collins"],
 
-  // tiki
   "ZOMBIE": ["tiki"],
 
-  // built muddled/crushed
   "MOJITO": ["collins"],
   "CAIPIRINHA": ["rocks"],
   "CAPRIOSKA": ["rocks"],
 
-  // mule
   "MOSCOW MULE": ["camping mug"],
-
-  // slings etc.
   "SINGAPORE SLING": ["collins"],
 };
 
@@ -79,14 +71,13 @@ function glassMatches(user, allowed){
   return allowed.some(opt => normalizeGlass(opt) === u);
 }
 
-// Dynamic total label
+// ===== UI bits =====
 function updateTotalLabel() {
   const total = state.names.length || 0;
   const indexHdr = document.querySelector('.index');
   if (indexHdr) indexHdr.innerHTML = `#<span id="index-label">${state.index+1}</span>/${total}`;
 }
 
-// Build rows
 function renderAlcoholRows(count, preset=[]) {
   const host = $('#alcohol-rows');
   host.innerHTML = '';
@@ -103,16 +94,13 @@ function renderAlcoholRows(count, preset=[]) {
     host.appendChild(row);
   }
 }
-
 function snapshotAlcoholRows(){
   const rows = [...document.querySelectorAll('#alcohol-rows .row')];
   return rows.map(r => ({
-    // keep raw values; don't coerce to number yet
     ml: r.querySelector('.ml').value,
     name: r.querySelector('.name').value
   }));
 }
-
 function collectAlcoholRows(){
   const rows = [...document.querySelectorAll('#alcohol-rows .row')];
   return rows.map(r=>{
@@ -205,11 +193,9 @@ function compareAgainstKey(key){
   const diffs = [];
   const userAlcohols = collectAlcoholRows();
 
-  // Alcohols
   if (!arraysEqualAsMultisets(userAlcohols, key.alcohols))
     diffs.push('Alcohol ingredients (ml + exact name) do not match.');
 
-  // Bitters
   const userBitters = $('#bitters').value;
   const userDashes = parseInt($('#dashes').value,10) || 0;
   if (key.bitters === 'peychaud’s bitters' || key.bitters === "peychaud's bitters"){
@@ -219,32 +205,22 @@ function compareAgainstKey(key){
     if ((key.dashes||0) !== userDashes) diffs.push(`Dashes should be ${key.dashes||0}.`);
   }
 
-  // Glassware (graded if we have an answer)
   const userGlass = $('#glass')?.value || '';
   const allowed = GLASS_KEY[key.name];
   if (allowed && allowed.length){
     if (!userGlass) diffs.push('Select a glass type.');
-    else if (!glassMatches(userGlass, allowed)) {
-      diffs.push(`Glassware should be ${allowed.join(' / ')}.`);
-    }
+    else if (!glassMatches(userGlass, allowed)) diffs.push(`Glassware should be ${allowed.join(' / ')}.`);
   }
 
-  // Ice
   const userIce = $('#iceType')?.value || 'none';
   if (!sameText(userIce, key.ice)) diffs.push(`Ice should be "${key.ice}".`);
 
-  // Method
   const userMethod = document.querySelector('input[name="method"]:checked').value;
   if (!sameText(userMethod, key.method)) diffs.push(`Method should be "${key.method}".`);
 
-  // Strain
   const userStrain = document.querySelector('input[name="strain"]:checked').value;
   if (!sameText(userStrain, key.strain)) diffs.push(`Strain should be "${key.strain || 'none'}".`);
 
-  // Muddled (optional, not graded)
-  const muddled = $('#Muddled')?.checked || false;
-
-  // Garnish
   const userGarnish = $('#garnish').value;
   if (!key.skipGarnishCheck){
     const okGarnish = (key.garnish||[]).some(g => sameText(g, userGarnish));
@@ -255,7 +231,7 @@ function compareAgainstKey(key){
   showResult(ok, diffs, key);
 }
 
-// Load names and render
+// ===== WASM glue + list rendering =====
 async function loadNamesAndRender(Module){
   state.getNames = Module.cwrap('getCocktailNamesJSON','string',[]);
   state.getKey   = Module.cwrap('getAnswerKeyJSON','string',['number']);
@@ -280,7 +256,6 @@ function setActiveListItem(){
     li.classList.toggle('active', i===state.index);
   });
 }
-
 function gotoIndex(i){
   const total = state.names.length || 1;
   state.index = ((i % total) + total) % total;
@@ -291,24 +266,23 @@ function gotoIndex(i){
   updateTotalLabel();
 }
 
+// ===== Bind UI =====
 function bindUI(){
-  document.querySelector('#prev-btn').onclick = () => gotoIndex(state.index - 1);
-  document.querySelector('#next-btn').onclick = () => gotoIndex(state.index + 1);
+  $('#prev-btn').onclick = () => gotoIndex(state.index - 1);
+  $('#next-btn').onclick = () => gotoIndex(state.index + 1);
 
-  // FIXED: add one row regardless of whether current rows are empty
-  document.querySelector('#add-row').onclick = () => {
-    const snap = snapshotAlcoholRows();           // keeps partial inputs
-    renderAlcoholRows(snap.length + 1, snap);     // add one more
+  $('#add-row').onclick = () => {
+    const snap = snapshotAlcoholRows();
+    renderAlcoholRows(snap.length + 1, snap);
   };
+  $('#reset-rows').onclick = () => renderAlcoholRows(1);
 
-  // Reset → exactly 1 blank row
-  document.querySelector('#reset-rows').onclick = () => renderAlcoholRows(1);
+  $('#show-answer').onclick = () => showResult(false, ['(Revealed by user)'], state.key);
+  $('#quiz-form').onsubmit = (e) => { e.preventDefault(); compareAgainstKey(state.key); };
 
-  document.querySelector('#show-answer').onclick = () => showResult(false, ['(Revealed by user)'], state.key);
-  document.querySelector('#quiz-form').onsubmit = (e) => { e.preventDefault(); compareAgainstKey(state.key); };
-
+  // Back-to-top uses the drawer (mobile) for extra scroll trigger
   const backBtn = document.getElementById('back-to-top');
-  const sidebar = document.querySelector('.sidebar');
+  const sidebar = document.getElementById('mobile-drawer');
   const toggleBackBtn = () => {
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     if (!isMobile) { backBtn?.classList.remove('show'); return; }
@@ -316,7 +290,8 @@ function bindUI(){
     const listScrolled = sidebar && sidebar.scrollTop > 80;
     backBtn?.classList.toggle('show', pageScrolled || listScrolled);
   };
-  const scrollBehavior = () => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+  const scrollBehavior = () =>
+    (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
 
   window.addEventListener('scroll', toggleBackBtn, { passive: true });
   sidebar?.addEventListener('scroll', toggleBackBtn, { passive: true });
@@ -326,35 +301,34 @@ function bindUI(){
   });
   toggleBackBtn();
 
-   // Drawer open/close (mobile)
+  // Drawer open/close (mobile)
   const drawerBtn = document.getElementById('open-drawer');
   const backdrop  = document.getElementById('drawer-backdrop');
 
-  const openDrawer = (open) => {
+  function openDrawer(open){
     document.body.classList.toggle('drawer-open', open);
     drawerBtn?.setAttribute('aria-expanded', String(open));
     if (backdrop) backdrop.hidden = !open;
-  };
+
+    // Lock background scroll while drawer is open
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
 
   drawerBtn?.addEventListener('click', () => {
     openDrawer(!document.body.classList.contains('drawer-open'));
   });
-
   backdrop?.addEventListener('click', () => openDrawer(false));
-
-  // Close on ESC
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') openDrawer(false);
   });
-
-  // Ensure it’s closed when switching to desktop
   window.addEventListener('resize', () => {
     if (window.matchMedia('(min-width:769px)').matches) openDrawer(false);
   });
 }
 bindUI();
 
-// Guard submit until WASM is ready
+// ===== WASM boot =====
 const submitBtn = document.getElementById('submit-btn');
 if (submitBtn) submitBtn.disabled = true;
 

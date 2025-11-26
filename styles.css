@@ -143,7 +143,9 @@ button.ghost{
   .content{ grid-area:content; padding:1rem; }
 }
 
-/* ---------- Mobile layout: stacked (content first, list after) ---------- */
+/* ---------- Mobile layout: content flows; sidebar becomes an off-canvas drawer ---------- */
+.drawer-backdrop[hidden]{ display:none !important; }
+
 @media (max-width:768px){
   /* Content takes full flow; drawer floats above it */
   body{
@@ -155,18 +157,19 @@ button.ghost{
     padding:.75rem;
     min-height:0;
     position:relative;
-    z-index:1;
+    z-index:1; /* content layer */
   }
 
   /* Drawer (sidebar) off-canvas on the left */
   .sidebar{
     position:fixed;
     top:0; bottom:0; left:0;
-    width:86vw;               /* drawer width */
+    width:86vw;                /* drawer width */
     max-width:420px;
-    transform:translateX(-100%);
+    transform:translateX(-100%) translateZ(0); /* force own composited layer */
     transition:transform .25s ease;
-    z-index:20;
+    will-change:transform;
+    z-index:1000;              /* drawer ABOVE everything */
 
     background:var(--card);
     border-right:1px solid var(--border);
@@ -184,16 +187,16 @@ button.ghost{
 
   /* When open */
   body.drawer-open .sidebar{
-    transform:translateX(0);
+    transform:translateX(0) translateZ(0);
   }
 
-  /* Drawer backdrop */
+  /* Drawer backdrop (between content and drawer) */
   .drawer-backdrop{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,.45);
     backdrop-filter:saturate(120%) blur(2px);
-    z-index:15;
+    z-index:900;
   }
 
   .toolbar{ position:sticky; top:0; z-index:5; }
@@ -211,7 +214,7 @@ button.ghost{
   }
 }
 
-/* Back-to-top stays above the content but below the drawer (z: 12 < 20) */
+/* Back-to-top stays under the backdrop and drawer */
 #back-to-top{
   position:fixed; right:1rem; bottom:1rem;
   display:none;
@@ -221,7 +224,16 @@ button.ghost{
   box-shadow:0 6px 18px rgba(0,0,0,.35);
   background:var(--primary); color:var(--primary-contrast);
   cursor:pointer;
-  z-index:12;
+  z-index:800;
 }
 #back-to-top.show{ display:inline-flex; }
 @media (min-width:769px){ #back-to-top{ display:none !important; } }
+
+/* Scrollbar (WebKit) */
+.sidebar::-webkit-scrollbar{ width:10px; }
+.sidebar::-webkit-scrollbar-thumb{ background:#2b313b; border-radius:8px; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion:reduce){
+  html:focus-within{ scroll-behavior:auto; }
+}
