@@ -3,10 +3,8 @@
 #include <vector>
 #include <sstream>
 #include <emscripten.h>
-#include <emscripten/bind.h>
 #include "model.hpp"
 #include "cocktails.hpp"
-using namespace emscripten;
 
 static std::vector<Cocktail> DB;
 
@@ -53,9 +51,4 @@ const char* getAnswerKeyJSON(int index){
   for (size_t i=0;i<c.garnish.size();++i){ if (i) os << ","; os << "\"" << esc(c.garnish[i]) << "\""; }
   os << "]"; os << "}"; out = os.str(); return out.c_str();
 }
-}
-
-EMSCRIPTEN_BINDINGS(api){
-  function("getCocktailNamesJSON", &getCocktailNamesJSON);
-  function("getAnswerKeyJSON", &getAnswerKeyJSON);
 }
