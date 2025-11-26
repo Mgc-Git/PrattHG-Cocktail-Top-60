@@ -36,6 +36,12 @@
             <button id="add-row" type="button">+ Row</button>
             <button id="reset-rows" type="button">Reset Rows</button>
           </div>
+          <!-- Extras / mixers toggles (mobile & desktop) -->
+          <div class="extras" style="display:grid; grid-auto-flow:column; gap:.75rem; align-items:center; margin-top:.5rem;">
+            <label><input type="checkbox" id="extra-soda"> Soda</label>
+            <label><input type="checkbox" id="extra-ginger"> Ginger beer</label>
+            <label><input type="checkbox" id="extra-grapefruit"> Grapefruit soda</label>
+          </div>
         </fieldset>
 
         <fieldset class="grid">
@@ -46,6 +52,7 @@
               <option value="none">none</option>
               <option value="angostura bitters">angostura bitters</option>
               <option value="orange bitters">orange bitters</option>
+              <option value="Peychaud's bitters">Peychaud’s bitters</option>
             </select>
           </label>
           <label>
@@ -79,6 +86,7 @@
           <label>
             <b>Ice type</b>
             <select id="iceType">
+              <option value="choose">(choose)</option>
               <option value="none">none</option>
               <option value="regular">regular</option>
               <option value="crushed">crushed</option>

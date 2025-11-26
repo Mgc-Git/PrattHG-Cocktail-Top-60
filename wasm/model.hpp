@@ -13,5 +13,11 @@ struct Cocktail {
   std::string ice;      // "none" | "regular" | "crushed" | "large"
   std::vector<std::string> garnish;
   bool skipGarnishCheck{false};
+
+  // -- optional flags --
+  bool require_muddled = false;
+  bool with_soda = false;
+  bool with_ginger_beer = false;
+  bool with_grapefruit_soda = false;
 };
 #endif

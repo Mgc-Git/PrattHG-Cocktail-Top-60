@@ -61,6 +61,26 @@ const GLASS_KEY = {
   "SINGAPORE SLING": ["collins"],
 };
 
+function setQuizDefaults(){
+  // Ice -> (choose)
+  const ice = document.getElementById('iceType');
+  if (ice) {
+    // safety: if someone forgot to add the placeholder, create it on the fly
+    if (!ice.querySelector('option[value=""]')) {
+      ice.insertBefore(new Option('(choose)', ''), ice.firstChild);
+    }
+    ice.value = ''; // select the placeholder
+  }
+
+  // Method -> shaken
+  const methodShaken = document.querySelector('input[name="method"][value="shaken"]');
+  if (methodShaken) methodShaken.checked = true;
+
+  // Strain -> single
+  const strainSingle = document.querySelector('input[name="strain"][value="single"]');
+  if (strainSingle) strainSingle.checked = true;
+}
+
 function normalizeGlass(v){
   const x = norm(v);
   if (x === "n&n" || x === "nick n nora" || x === "nick nora") return "nick and nora";
@@ -111,30 +131,55 @@ function collectAlcoholRows(){
 }
 
 function applyKeyToForm(key){
+  // Header + index
   document.querySelector('#title').textContent = key.name;
-  document.querySelector('#index-label').textContent = (state.index+1);
+  document.querySelector('#index-label').textContent = (state.index + 1);
 
+  // Bitters note
   const note = document.querySelector('#bitters-note');
   if (key.bitters === 'peychaud’s bitters' || key.bitters === "peychaud's bitters") {
     note.hidden = false;
     note.textContent = 'Note: correct bitters is Peychaud’s (not available in dropdown).';
-  } else { note.hidden = true; }
+  } else {
+    note.hidden = true;
+  }
 
-  renderAlcoholRows(1); // start with 1 blank row
+  // Start with 1 blank row
+  renderAlcoholRows(1);
 
-  document.querySelector('#bitters').value = 'none';
-  document.querySelector('#dashes').value = 0;
-  if (document.querySelector('#glass'))   document.querySelector('#glass').value = '';
-  if (document.querySelector('#iceType')) document.querySelector('#iceType').value = key.ice;
+  // --- Default ALL inputs to their FIRST option/value in the DOM ---
 
-  (document.querySelector(`input[name="method"][value="${key.method}"]`)
-    || document.querySelector(`input[name="method"][value="shaken"]`))?.click();
-  (document.querySelector(`input[name="strain"][value="${key.strain}"]`)
-    || document.querySelector(`input[name="strain"][value="single"]`))?.click();
+  // Selects -> first option
+  const selBitters = document.querySelector('#bitters');
+  const selGlass   = document.querySelector('#glass');
+  const selIce     = document.querySelector('#iceType');
+  if (selBitters) selBitters.selectedIndex = 0;
+  if (selGlass)   selGlass.selectedIndex   = 0;
+  if (selIce)     selIce.selectedIndex     = 0;
 
-  const mud = document.querySelector('#Muddled'); if (mud) mud.checked = false;
+  // Numeric inputs
+  const dashes = document.querySelector('#dashes');
+  if (dashes) dashes.value = 0;
 
-  document.querySelector('#garnish').value = '';
+  // Radios -> first radio in each group
+  const checkFirstRadio = (name) => {
+    const first = document.querySelector(`input[name="${name}"]`);
+    if (first) first.checked = true;
+  };
+  checkFirstRadio('method');  // e.g., first of shaken/stirred/build
+  checkFirstRadio('strain');  // e.g., first of single/double/dump/na
+
+  // Checkboxes (extras) -> unchecked
+  const cbMud  = document.getElementById('Muddled');
+  const cbSoda = document.getElementById('extra-soda');
+  const cbGing = document.getElementById('extra-ginger');
+  const cbGrap = document.getElementById('extra-grapefruit');
+  if (cbMud)  cbMud.checked  = false;
+  if (cbSoda) cbSoda.checked = false;
+  if (cbGing) cbGing.checked = false;
+  if (cbGrap) cbGrap.checked = false;
+
+  // Hide any previous result
   document.querySelector('#result').hidden = true;
 }
 
@@ -178,11 +223,21 @@ function showResult(ok, diffs, key){
     }
 
     lines.push(`<div><strong>Ice:</strong> ${key.ice}</div>`);
-    lines.push(`<div><strong>Method:</strong> ${key.method}, <strong>Strain:</strong> ${key.strain || 'none'}</div>`);
+    const methodLabel = key.method === 'build' ? 'build in glass' : key.method;
+    lines.push(`<div><strong>Method:</strong> ${methodLabel}, <strong>Strain:</strong> ${key.strain || 'none'}</div>`);
     if (!key.skipGarnishCheck) lines.push(`<div><strong>Garnish:</strong> ${(key.garnish&&key.garnish.length)? key.garnish.join(' / ') : 'None'}</div>`);
     else lines.push(`<div><strong>Garnish:</strong> varies (accept any)</div>`);
-  }
 
+    const extras = [];
+    if (key.with_soda) extras.push('soda');
+    if (key.with_ginger_beer) extras.push('ginger beer');
+    if (key.with_grapefruit_soda) extras.push('grapefruit soda');
+    if (key.require_muddled) extras.push('muddled');
+
+    if (extras.length){
+      lines.push(`<div><strong>Extras:</strong> ${extras.join(', ')}</div>`);
+    }
+  }
   details.innerHTML = lines.join('');
   res.hidden = false;
 }
@@ -215,17 +270,36 @@ function compareAgainstKey(key){
   const userIce = $('#iceType')?.value || 'none';
   if (!sameText(userIce, key.ice)) diffs.push(`Ice should be "${key.ice}".`);
 
-  const userMethod = document.querySelector('input[name="method"]:checked').value;
-  if (!sameText(userMethod, key.method)) diffs.push(`Method should be "${key.method}".`);
+  // Method & Strain
+  const userMethod = document.querySelector('input[name="method"]:checked')?.value || '';
+  const userStrain = document.querySelector('input[name="strain"]:checked')?.value || '';
 
-  const userStrain = document.querySelector('input[name="strain"]:checked').value;
-  if (!sameText(userStrain, key.strain)) diffs.push(`Strain should be "${key.strain || 'none'}".`);
+  if (!sameText(userMethod, key.method)) {
+    diffs.push(`Method should be "${key.method === 'build' ? 'build in glass' : key.method}".`);
+  } else {
+    // If the method is BUILD, don't grade strain at all (strain not applicable)
+    if (!sameText(key.method, 'build')) {
+      if (!sameText(userStrain, key.strain)) {
+        diffs.push(`Strain should be "${key.strain || 'none'}".`);
+      }
+    }
+  }
 
   const userGarnish = $('#garnish').value;
   if (!key.skipGarnishCheck){
     const okGarnish = (key.garnish||[]).some(g => sameText(g, userGarnish));
     if (!okGarnish) diffs.push(`Garnish should be "${(key.garnish||[]).join(' / ')||'None'}".`);
   }
+
+  const muddled = document.getElementById('Muddled')?.checked || false;
+  const hasSoda = document.getElementById('extra-soda')?.checked || false;
+  const hasGing = document.getElementById('extra-ginger')?.checked || false;
+  const hasGrap = document.getElementById('extra-grapefruit')?.checked || false;
+
+  if (key.require_muddled && !muddled) diffs.push('This drink should be muddled.');
+  if (key.with_soda && !hasSoda) diffs.push('Top with soda.');
+  if (key.with_ginger_beer && !hasGing) diffs.push('Add ginger beer.');
+  if (key.with_grapefruit_soda && !hasGrap) diffs.push('Add grapefruit soda.');
 
   const ok = diffs.length === 0;
   showResult(ok, diffs, key);
