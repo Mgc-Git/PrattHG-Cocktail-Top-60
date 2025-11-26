@@ -6,6 +6,7 @@ function norm(s){ return (s||'').toLowerCase().replace(/[^\w\s]/g,'').replace(/\
 function sameText(a,b){ return norm(a) === norm(b); }
 
 function renderAlcoholRows(count, preset=[]) {
+  // Creates ml+name rows (count defaults to key.alcohols.length)
   const host = $('#alcohol-rows');
   host.innerHTML = '';
   const n = Math.max(count, preset.length || 0, 1);
@@ -32,19 +33,37 @@ function collectAlcoholRows(){
 }
 
 function applyKeyToForm(key){
-  $('#title').textContent = `${key.name}`;
+  // Reset UI for the selected cocktail
+  $('#title').textContent = key.name;
   $('#index-label').textContent = (state.index+1);
+
   const note = $('#bitters-note');
   if (key.bitters === 'peychaud’s bitters' || key.bitters === "peychaud's bitters") {
     note.hidden = false;
     note.textContent = 'Note: correct bitters is Peychaud’s (not available in dropdown).';
   } else { note.hidden = true; }
+
   renderAlcoholRows(key.alcohols.length);
+
+  // Defaults
   $('#bitters').value = 'none';
   $('#dashes').value = 0;
-  $('#ice').value = key.ice;
-  document.querySelector(`input[name="method"][value="${key.method}"]`).checked = true;
-  document.querySelector(`input[name="strain"][value="${key.strain}"]`).checked = true;
+
+  // Glassware (captured, not graded) + Ice (graded)
+  if ($('#glass'))   $('#glass').value = '';
+  if ($('#iceType')) $('#iceType').value = key.ice;
+
+  // Method radios: key may be shaken|stirred|build
+  (document.querySelector(`input[name="method"][value="${key.method}"]`)
+    || document.querySelector(`input[name="method"][value="shaken"]`))?.click();
+
+  // Strain radios: key may be single|double|dump|none|na (currently your list uses single/double)
+  (document.querySelector(`input[name="strain"][value="${key.strain}"]`)
+    || document.querySelector(`input[name="strain"][value="single"]`))?.click();
+
+  // Muddled (optional)
+  const mud = $('#Muddled'); if (mud) mud.checked = false;
+
   $('#garnish').value = '';
   $('#result').hidden = true;
 }
@@ -69,27 +88,38 @@ function showResult(ok, diffs, key){
   const res = $('#result');
   const status = $('#result-status');
   const details = $('#result-details');
+
   status.innerHTML = ok ? `<strong class="good">Correct ✔</strong>` : `<strong class="bad">Incorrect ✖</strong>`;
   const lines = [];
-  for (const d of diffs){ lines.push(`<div>• ${d}</div>`); }
+  for (const d of diffs) lines.push(`<div>• ${d}</div>`);
+
   if (!ok){
     const alcLines = key.alcohols.map(a=>`${a.ml}ml ${a.name}`).join('; ');
     lines.push(`<hr>`);
     lines.push(`<div><strong>Correct alcohols:</strong> ${alcLines || 'None'}</div>`);
     lines.push(`<div><strong>Bitters:</strong> ${key.bitters} ${key.dashes?`(${key.dashes} dashes)`:''}</div>`);
-    lines.push(`<div><strong>Glassware/Ice:</strong> ${key.ice}</div>`);
-    lines.push(`<div><strong>Method:</strong> ${key.method}, <strong>Strain:</strong> ${key.strain}</div>`);
+    lines.push(`<div><strong>Glassware:</strong> <em>not checked</em></div>`);
+    lines.push(`<div><strong>Ice:</strong> ${key.ice}</div>`);
+    lines.push(`<div><strong>Method:</strong> ${key.method}, <strong>Strain:</strong> ${key.strain || 'None'}</div>`);
     if (!key.skipGarnishCheck) lines.push(`<div><strong>Garnish:</strong> ${(key.garnish&&key.garnish.length)? key.garnish.join(' / ') : 'None'}</div>`);
     else lines.push(`<div><strong>Garnish:</strong> varies (accept any)</div>`);
   }
+
   details.innerHTML = lines.join('');
   res.hidden = false;
 }
 
 function compareAgainstKey(key){
+  if (!key){ alert("Still loading data. Try again in a moment."); return; }
+
   const diffs = [];
   const userAlcohols = collectAlcoholRows();
-  if (!arraysEqualAsMultisets(userAlcohols, key.alcohols)) diffs.push('Alcohol ingredients (ml + exact name) do not match.');
+
+  // Alcohols
+  if (!arraysEqualAsMultisets(userAlcohols, key.alcohols))
+    diffs.push('Alcohol ingredients (ml + exact name) do not match.');
+
+  // Bitters
   const userBitters = $('#bitters').value;
   const userDashes = parseInt($('#dashes').value,10) || 0;
   if (key.bitters === 'peychaud’s bitters' || key.bitters === "peychaud's bitters"){
@@ -98,28 +128,44 @@ function compareAgainstKey(key){
     if (!sameText(userBitters, key.bitters)) diffs.push(`Bitters should be "${key.bitters}".`);
     if ((key.dashes||0) !== userDashes) diffs.push(`Dashes should be ${key.dashes||0}.`);
   }
-  const userIce = $('#ice').value;
-  if (!sameText(userIce, key.ice)) diffs.push(`Glassware/Ice should be "${key.ice}".`);
+
+  // Glassware (captured, not graded)
+  const userGlass = $('#glass')?.value || '';
+
+  // Ice (graded)
+  const userIce = $('#iceType')?.value || 'none';
+  if (!sameText(userIce, key.ice)) diffs.push(`Ice should be "${key.ice}".`);
+
+  // Method (graded) — exact: shaken|stirred|build
   const userMethod = document.querySelector('input[name="method"]:checked').value;
-  const userStrain = document.querySelector('input[name="strain"]:checked').value;
   if (!sameText(userMethod, key.method)) diffs.push(`Method should be "${key.method}".`);
-  if (!sameText(userStrain, key.strain)) diffs.push(`Strain should be "${key.strain}".`);
+
+  // Strain (graded) — exact: single|double|dump|none|na
+  const userStrain = document.querySelector('input[name="strain"]:checked').value;
+  if (!sameText(userStrain, key.strain)) diffs.push(`Strain should be "${key.strain || 'none'}".`);
+
+  // Muddled (optional capture; not graded)
+  const muddled = $('#Muddled')?.checked || false;
+
+  // Garnish
   const userGarnish = $('#garnish').value;
   if (!key.skipGarnishCheck){
     const okGarnish = (key.garnish||[]).some(g => sameText(g, userGarnish));
     if (!okGarnish) diffs.push(`Garnish should be "${(key.garnish||[]).join(' / ')||'None'}".`);
   }
+
   const ok = diffs.length === 0;
   showResult(ok, diffs, key);
 }
 
 async function loadNamesAndRender(Module){
   state.getNames = Module.cwrap('getCocktailNamesJSON','string',[]);
-  state.getKey = Module.cwrap('getAnswerKeyJSON','string',['number']);
-  const names = JSON.parse(state.getNames());
+  state.getKey   = Module.cwrap('getAnswerKeyJSON','string',['number']);
+
+  const names = JSON.parse(state.getNames() || "[]");
   state.names = names;
-  const list = $('#cocktail-list');
-  list.innerHTML = '';
+
+  const list = $('#cocktail-list'); list.innerHTML = '';
   names.forEach((n, i) => {
     const li = document.createElement('li');
     li.textContent = n;
@@ -154,4 +200,12 @@ function bindUI(){
   $('#quiz-form').onsubmit = (e) => { e.preventDefault(); compareAgainstKey(state.key); };
 }
 bindUI();
-if (window.Module){ window.Module().then(loadNamesAndRender); } else { console.error('wasm/app.js not found. Build the C++ first.'); }
+
+if (window.Module){
+  window.Module().then((Module) => {
+    loadNamesAndRender(Module);
+    if (submitBtn) submitBtn.disabled = false;
+  });
+} else {
+  console.error('wasm/app.js not found. Build the C++ first.');
+}

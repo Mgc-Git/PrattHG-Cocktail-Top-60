@@ -51,10 +51,27 @@
         </fieldset>
 
         <fieldset class="grid">
-          <legend>Glassware / Ice</legend>
+          <legend>Glassware</legend>
           <label>
-            Glassware
-            <select id="ice">
+            Glass type
+            <select id="glass">
+              <option value="">(choose)</option>
+              <option value="coupette">coupette</option>
+              <option value="coupe">coupe</option>
+              <option value="rocks">rocks</option>
+              <option value="collins">collins</option>
+              <option value="nick and nora">nick and nora</option>
+              <option value="tiki">tiki</option>
+              <option value="camping mug">camping mug</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="grid">
+          <legend>Ice</legend>
+          <label>
+            Ice type
+            <select id="iceType">
               <option value="none">none</option>
               <option value="regular">regular</option>
               <option value="crushed">crushed</option>
@@ -66,14 +83,18 @@
         <fieldset class="grid">
           <legend>Method & Strain</legend>
           <div class="radio-group">
-            <span>Shaken/Stirred</span>
+            <span>Method</span>
             <label><input type="radio" name="method" value="shaken" checked /> Shaken</label>
             <label><input type="radio" name="method" value="stirred" /> Stirred</label>
+            <label><input type="radio" name="method" value="build" /> Build in glass</label>
+            <label><input type="checkbox" id="Muddled" /> Muddled (Optional)</label>
           </div>
           <div class="radio-group">
             <span>Strain</span>
             <label><input type="radio" name="strain" value="single" checked /> Single strained</label>
             <label><input type="radio" name="strain" value="double" /> Double strained</label>
+            <label><input type="radio" name="strain" value="dump" /> Dump</label>
+            <label><input type="radio" name="strain" value="na" /> N/A</label>
           </div>
         </fieldset>
 
