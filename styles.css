@@ -165,13 +165,20 @@ button.ghost{
 
   .sidebar{
     grid-area: sidebar;
-    position: static !important;         
+    position: sticky;         
+    bottom: 0;
+    top: auto;
+    align-self: end;
+
     z-index: 0;
+
     border-top: 1px solid var(--border);
     padding: .75rem;
     background: var(--card);
+
     -webkit-overflow-scrolling: touch;
     overflow: auto;
+    
     padding-bottom: calc(.75rem + env(safe-area-inset-bottom));
     scrollbar-gutter: stable;
     overscroll-behavior: contain;
