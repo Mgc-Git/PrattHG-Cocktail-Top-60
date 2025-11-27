@@ -129,7 +129,7 @@ push({"MISSIONARY’S DOWNFALL", {{"Havana Club 3 Y/O Anos",30},{"Peach Schnapps
       "none",0,"shaken","dump","crushed",{"mint sprig"},false});
 
 push({"DARK AND STORMY", {{"Goslings Black Seal Rum",45},{"Lime juice",15}},
-      "none",0,"build","na","regular",{"mint sprig"},false}).mehtod_note =
+      "none",0,"build","na","regular",{"mint sprig"},false}).method_note =
       "Layer dark rum on top as final step";
 
 push({"SINGAPORE SLING", {{"Beefeater Gin",45},{"Cherry Heering",15},{"Cointreau",7},{"Dom Benedictine",7},{"Pineapple juice",45},{"Lime juice",15},{"Grenadine",10}},
