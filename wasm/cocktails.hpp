@@ -73,7 +73,7 @@ push({"SOUTHSIDE", {{"Beefeater Gin",60},{"Lime juice",20},{"Sugar syrup",20}},
       "none",0,"shaken","double","none",{"mint leaf"},false});
 
 push({"MOJITO", {{"Havana Club 3 Y/O Anos",60}},
-      "none",0,"build","na","crushed",{"mint sprig"},false});
+      "none",0,"shaken","dump","crushed",{"mint sprig"},false});
 
 push({"PINA COLADA", {{"Havana Especial",60},{"Pineapple juice",60},{"Lime juice",30},{"Coco Real Cream of Coconut",30}},
       "none",0,"shaken","dump","crushed",{"2 pineapple fronds","two pineapple fronds"},false});
@@ -217,5 +217,7 @@ push({"SIDECAR", {{"Martel VS Cognac",45},{"Cointreau",15},{"Lemon juice",20}},
       "none",0,"shaken","double","none",{"lemon twist"},false});
 
 apply_extras(DB);
+
+
 }
 #endif

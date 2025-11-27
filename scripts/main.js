@@ -131,6 +131,14 @@ function collectAlcoholRows(){
 }
 
 function applyKeyToForm(key){
+
+  //print key to console
+  console.log('KEY:', key.name, {
+    require_muddled: key.require_muddled,
+    with_soda: key.with_soda,
+    with_ginger_beer: key.with_ginger_beer,
+    with_grapefruit_soda: key.with_grapefruit_soda
+  });
   // Header + index
   document.querySelector('#title').textContent = key.name;
   document.querySelector('#index-label').textContent = (state.index + 1);
