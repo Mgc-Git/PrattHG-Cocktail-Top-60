@@ -187,6 +187,32 @@ function applyKeyToForm(key){
   if (cbGing) cbGing.checked = false;
   if (cbGrap) cbGrap.checked = false;
 
+  const noteBox = document.getElementById('method-note');
+const stepsBox = document.getElementById('method-steps');
+
+if (noteBox) {
+  if (key.method_note && key.method_note.trim()) {
+    noteBox.textContent = key.method_note;
+    noteBox.hidden = false;
+  } else {
+    noteBox.hidden = true;
+    noteBox.textContent = '';
+  }
+}
+if (stepsBox) {
+  stepsBox.innerHTML = '';
+  if (Array.isArray(key.method_steps) && key.method_steps.length) {
+    key.method_steps.forEach(s => {
+      const li = document.createElement('li');
+      li.textContent = s;
+      stepsBox.appendChild(li);
+    });
+    stepsBox.hidden = false;
+  } else {
+    stepsBox.hidden = true;
+  }
+}
+
   // Hide any previous result
   document.querySelector('#result').hidden = true;
 }
@@ -235,6 +261,15 @@ function showResult(ok, diffs, key){
     lines.push(`<div><strong>Method:</strong> ${methodLabel}, <strong>Strain:</strong> ${key.strain || 'none'}</div>`);
     if (!key.skipGarnishCheck) lines.push(`<div><strong>Garnish:</strong> ${(key.garnish&&key.garnish.length)? key.garnish.join(' / ') : 'None'}</div>`);
     else lines.push(`<div><strong>Garnish:</strong> varies (accept any)</div>`);
+    
+    if (key.method_note || (key.method_steps && key.method_steps.length)) {
+    lines.push(`<hr>`);
+    if (key.method_note) lines.push(`<div><strong>Method note:</strong> ${key.method_note}</div>`);
+    if (key.method_steps && key.method_steps.length) {
+    const steps = key.method_steps.map((s,i)=>`${i+1}. ${s}`).join('<br>');
+    lines.push(`<div><strong>Steps:</strong><br>${steps}</div>`);
+        }
+    }
 
     const extras = [];
     if (key.with_soda) extras.push('soda');

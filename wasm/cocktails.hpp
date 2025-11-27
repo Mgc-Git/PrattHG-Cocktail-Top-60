@@ -64,7 +64,8 @@ push({"LYCHEE MARTINI", {{"Beefeater Gin",20},{"Soho Lychee",20},{"Rockbare Ries
       "none",0,"shaken","double","none",{"lychee on skewer","lychee"},false});
 
 push({"LONG ISLAND ICED TEA", {{"Wyborowa Vodka",15},{"Beefeater Gin",15},{"Havana Club 3 Y/O Anos",15},{"Olmeca Plata",15},{"Cointreau",15},{"Lemon juice",30}},
-      "none",0,"shaken","single","regular",{"lemon wedge - METHOD: Fill glass with ice and half coke, shake all ingredients and strain over coke "},false});
+      "none",0,"shaken","single","regular",{"lemon wedge"},false}).method_note =
+      "Fill glass with ice and half cola first, shake the spirits + lemon, strain over cola, top to taste. Light churn.";
 
 push({"COSMOPOLITAN", {{"Absolut Citron Vodka",45},{"Cointreau",15},{"Cranberry juice",30},{"Lime juice",15}},
       "none",0,"shaken","double","none",{"flamed orange coin","orange coin"},false});
@@ -73,7 +74,13 @@ push({"SOUTHSIDE", {{"Beefeater Gin",60},{"Lime juice",20},{"Sugar syrup",20}},
       "none",0,"shaken","double","none",{"mint leaf"},false});
 
 push({"MOJITO", {{"Havana Club 3 Y/O Anos",60}},
-      "none",0,"shaken","dump","crushed",{"mint sprig"},false});
+      "none",0,"shaken","dump","crushed",{"mint sprig"},false}).method_steps = {
+            "Add 4 lime wedges and 1 heaped barspoon brown sugar to glass.",
+            "Muddle gently to express juice (don’t pulverize).",
+            "Add rum, fill with crushed ice, churn, top with crushed ice.",
+            "Garnish with mint sprig."
+            };
+
 
 push({"PINA COLADA", {{"Havana Especial",60},{"Pineapple juice",60},{"Lime juice",30},{"Coco Real Cream of Coconut",30}},
       "none",0,"shaken","dump","crushed",{"2 pineapple fronds","two pineapple fronds"},false});
