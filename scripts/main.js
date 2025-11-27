@@ -131,14 +131,6 @@ function collectAlcoholRows(){
 }
 
 function applyKeyToForm(key){
-
-  //print key to console
-  console.log('KEY:', key.name, {
-    require_muddled: key.require_muddled,
-    with_soda: key.with_soda,
-    with_ginger_beer: key.with_ginger_beer,
-    with_grapefruit_soda: key.with_grapefruit_soda
-  });
   // Header + index
   document.querySelector('#title').textContent = key.name;
   document.querySelector('#index-label').textContent = (state.index + 1);
@@ -190,23 +182,24 @@ function applyKeyToForm(key){
   const noteBox = document.getElementById('method-note');
 const stepsBox = document.getElementById('method-steps');
 
-// Show method note / steps in the form (read-only)
-  const noteBox = document.getElementById('method-note');
-  const stepsOl = document.getElementById('method-steps');
+ // --- Method hint display (read-only) ---
+  const noteBox  = document.getElementById('method-note');
+  const stepsOl  = document.getElementById('method-steps');
 
   if (noteBox) {
     const hasNote = !!(key.method_note && key.method_note.trim());
-    noteBox.hidden = !hasNote;
     noteBox.textContent = hasNote ? key.method_note : '';
+    noteBox.hidden = !hasNote;
   }
   if (stepsOl) {
     const steps = Array.isArray(key.method_steps) ? key.method_steps : [];
-    stepsOl.hidden = steps.length === 0;
     stepsOl.innerHTML = steps.map(s => `<li>${s}</li>`).join('');
+    stepsOl.hidden = steps.length === 0;
   }
 
   // Hide any previous result
-  document.querySelector('#result').hidden = true;
+  const res = document.querySelector('#result');
+  if (res) res.hidden = true;
 }
 
 function arraysEqualAsMultisets(user, expected){
