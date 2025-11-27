@@ -46,6 +46,12 @@ const char* getAnswerKeyJSON(int index){
   os << "\"method\":\"" << esc(c.method) << "\",";
   os << "\"strain\":\"" << esc(c.strain) << "\",";
   os << "\"ice\":\"" << esc(c.ice) << "\",";
+
+  os << "\"require_muddled\":"      << (c.require_muddled      ? "true" : "false") << ",";
+  os << "\"with_soda\":"            << (c.with_soda            ? "true" : "false") << ",";
+  os << "\"with_ginger_beer\":"     << (c.with_ginger_beer     ? "true" : "false") << ",";
+  os << "\"with_grapefruit_soda\":" << (c.with_grapefruit_soda ? "true" : "false") << ",";
+
   os << "\"skipGarnishCheck\":" << (c.skipGarnishCheck?"true":"false") << ",";
   os << "\"garnish\":[";
   for (size_t i=0;i<c.garnish.size();++i){ if (i) os << ","; os << "\"" << esc(c.garnish[i]) << "\""; }
