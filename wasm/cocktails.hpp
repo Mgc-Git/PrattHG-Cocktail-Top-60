@@ -141,7 +141,7 @@ push({"PENICILLIN", {{"Naked Grouse Whisky",45},{"Lemon juice",20},{"Honey & gin
 push({"NUCLEAR SOUR", {{"Jim Beam Rye",25},{"Yellow Chartreuse",25},{"Falernum",10},{"Lemon juice",20},{"Red Wine",15}},
       "none",0,"shaken","double","large",{"red wine float"},false});
 
-push({"GRASSHOPPER", {{"Crème de Menthe",30},{"Josph Cartron White Crème de Cacao",30},{"Cream",30}},
+push({"GRASSHOPPER", {{"Crème de Menthe",30},{"Joseph Cartron White Crème de Cacao",30},{"Cream",30}},
       "none",0,"shaken","double","none",{"mint leaf","grated chocolate"},false});
 
 push({"FRENCH 75", {{"Beefeater Gin",20},{"Lemon juice",10},{"Sugar syrup",10},{"Chandon Brut",75}},
@@ -174,7 +174,7 @@ push({"BLOODY MARY", {{"Wyborowa Vodka",60},{"Tomato juice",120},{"Lemon juice",
 
 push({"GIMLET", {{"Beefeater Gin",60},{"Lime juice", 20},{"Sugar syrup",20}},
       "none",0,"shaken","double","none",{"lime twist"},false}).method_note =
-      "Optional Lime Marmelade instead of Lime juice and sugar syrup";
+      "Optional Lime Marmalade instead of Lime juice and sugar syrup";
 
 push({"GIN FIZZ", {{"Beefeater Gin",60},{"Lemon juice",20},{"Sugar syrup",15}},
       "none",0,"shaken","double","none",{"none"},false}).method_note =
