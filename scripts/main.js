@@ -179,9 +179,6 @@ function applyKeyToForm(key){
   if (cbGing) cbGing.checked = false;
   if (cbGrap) cbGrap.checked = false;
 
-  const noteBox = document.getElementById('method-note');
-const stepsBox = document.getElementById('method-steps');
-
  // --- Method hint display (read-only) ---
   const noteBox  = document.getElementById('method-note');
   const stepsOl  = document.getElementById('method-steps');
