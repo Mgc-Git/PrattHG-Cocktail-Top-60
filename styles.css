@@ -75,6 +75,34 @@ button.ghost{
   border:1px dashed var(--border);
 }
 
+/* Method Box */
+
+#method-free{
+  width: 100%;
+  box-sizing: border-box;
+  padding: .75rem .9rem;
+
+  /* pull from your existing input palette, with fallbacks */
+  background: var(--input-bg, #1e2125);
+  color: var(--input-fg, #e8eaed);
+  border: 1px solid var(--input-border, #2b3036);
+  border-radius: var(--input-radius, 10px);
+
+  resize: vertical;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  font: inherit; /* same font as your other inputs */
+}
+
+#method-free::placeholder{
+  color: var(--input-placeholder, #9aa0a6);
+}
+
+#method-free:focus{
+  border-color: var(--input-focus, #6c8cff);
+  box-shadow: 0 0 0 2px rgba(108,140,255,.25);
+}
+
 /* Toolbar */
 .toolbar{
   display:flex; align-items:center; justify-content:space-between;
