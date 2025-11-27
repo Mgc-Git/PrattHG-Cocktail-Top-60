@@ -190,28 +190,20 @@ function applyKeyToForm(key){
   const noteBox = document.getElementById('method-note');
 const stepsBox = document.getElementById('method-steps');
 
-if (noteBox) {
-  if (key.method_note && key.method_note.trim()) {
-    noteBox.textContent = key.method_note;
-    noteBox.hidden = false;
-  } else {
-    noteBox.hidden = true;
-    noteBox.textContent = '';
+// Show method note / steps in the form (read-only)
+  const noteBox = document.getElementById('method-note');
+  const stepsOl = document.getElementById('method-steps');
+
+  if (noteBox) {
+    const hasNote = !!(key.method_note && key.method_note.trim());
+    noteBox.hidden = !hasNote;
+    noteBox.textContent = hasNote ? key.method_note : '';
   }
-}
-if (stepsBox) {
-  stepsBox.innerHTML = '';
-  if (Array.isArray(key.method_steps) && key.method_steps.length) {
-    key.method_steps.forEach(s => {
-      const li = document.createElement('li');
-      li.textContent = s;
-      stepsBox.appendChild(li);
-    });
-    stepsBox.hidden = false;
-  } else {
-    stepsBox.hidden = true;
+  if (stepsOl) {
+    const steps = Array.isArray(key.method_steps) ? key.method_steps : [];
+    stepsOl.hidden = steps.length === 0;
+    stepsOl.innerHTML = steps.map(s => `<li>${s}</li>`).join('');
   }
-}
 
   // Hide any previous result
   document.querySelector('#result').hidden = true;
@@ -262,13 +254,15 @@ function showResult(ok, diffs, key){
     if (!key.skipGarnishCheck) lines.push(`<div><strong>Garnish:</strong> ${(key.garnish&&key.garnish.length)? key.garnish.join(' / ') : 'None'}</div>`);
     else lines.push(`<div><strong>Garnish:</strong> varies (accept any)</div>`);
     
-    if (key.method_note || (key.method_steps && key.method_steps.length)) {
-    lines.push(`<hr>`);
-    if (key.method_note) lines.push(`<div><strong>Method note:</strong> ${key.method_note}</div>`);
-    if (key.method_steps && key.method_steps.length) {
-    const steps = key.method_steps.map((s,i)=>`${i+1}. ${s}`).join('<br>');
-    lines.push(`<div><strong>Steps:</strong><br>${steps}</div>`);
-        }
+    // Method note / steps (if supplied in key)
+    if (key.method_note && key.method_note.trim()) {
+      lines.push(`<div><strong>Method note:</strong> ${key.method_note}</div>`);
+    }
+    if (Array.isArray(key.method_steps) && key.method_steps.length) {
+      lines.push(`<div><strong>Method steps:</strong></div>`);
+      lines.push(`<ol style="margin:.25rem 0 0 1.25rem;">${
+        key.method_steps.map(s => `<li>${s}</li>`).join('')
+      }</ol>`);
     }
 
     const extras = [];

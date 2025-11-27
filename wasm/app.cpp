@@ -32,38 +32,53 @@ extern "C" {
     static std::string out;
     if (index < 0) index = 0;
     if (index >= (int)DB.size()) index = (int)DB.size()-1;
-    const auto& c = DB[index]; std::ostringstream os; os << "{";
+
+    const auto& c = DB[index];
+    std::ostringstream os;
+    os << "{";
     os << "\"index\":" << index << ",";
     os << "\"name\":\"" << esc(c.name) << "\",";
+
     os << "\"alcohols\":[";
-      for (size_t i=0;i<c.alcohols.size();++i){
-        if (i) os << ",";
-        os << "{\"ml\":" << c.alcohols[i].ml << ",\"name\":\"" << esc(c.alcohols[i].name) << "\"}";
-      }
+    for (size_t i=0;i<c.alcohols.size();++i){
+      if (i) os << ",";
+      os << "{\"ml\":" << c.alcohols[i].ml << ",\"name\":\"" << esc(c.alcohols[i].name) << "\"}";
+    }
     os << "],";
+
     os << "\"bitters\":\"" << esc(c.bitters) << "\",";
     os << "\"dashes\":" << c.dashes << ",";
     os << "\"method\":\"" << esc(c.method) << "\",";
     os << "\"strain\":\"" << esc(c.strain) << "\",";
     os << "\"ice\":\"" << esc(c.ice) << "\",";
 
+    // extras / flags
     os << "\"require_muddled\":"      << (c.require_muddled      ? "true" : "false") << ",";
     os << "\"with_soda\":"            << (c.with_soda            ? "true" : "false") << ",";
     os << "\"with_ginger_beer\":"     << (c.with_ginger_beer     ? "true" : "false") << ",";
     os << "\"with_grapefruit_soda\":" << (c.with_grapefruit_soda ? "true" : "false") << ",";
 
-    os << "\"skipGarnishCheck\":" << (c.skipGarnishCheck?"true":"false") << ",";
+    // garnish
+    os << "\"skipGarnishCheck\":" << (c.skipGarnishCheck ? "true" : "false") << ",";
     os << "\"garnish\":[";
-    for (size_t i=0;i<c.garnish.size();++i){ 
-      if (i) os << ","; os << "\"" << esc(c.garnish[i]) << "\""; }
-    os << "]"; os << "}"; out = os.str(); return out.c_str();
-    
+    for (size_t i=0;i<c.garnish.size();++i){
+      if (i) os << ",";
+      os << "\"" << esc(c.garnish[i]) << "\"";
+    }
+    os << "],";
+
+    // NEW: method note + steps BEFORE closing/return
     os << "\"method_note\":\"" << esc(c.method_note) << "\",";
     os << "\"method_steps\":[";
     for (size_t i=0;i<c.method_steps.size();++i){
       if (i) os << ",";
       os << "\"" << esc(c.method_steps[i]) << "\"";
     }
-  os << "],";
+    os << "]";
+
+    os << "}";
+
+    out = os.str();
+    return out.c_str();
   }
 }
