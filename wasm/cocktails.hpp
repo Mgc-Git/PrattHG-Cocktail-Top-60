@@ -40,7 +40,7 @@ push({"MARGARITA", {{"Olmeca Plata",45},{"Cointreau",15},{"Lime juice",30}},
       "none",0,"shaken","single","regular",{"lime wheel","no garnish","none"},false});
 
 push({"AMARETTO SOUR", {{"Disaronno Amaretto",60},{"Lemon juice",30},{"Sugar syrup",10}},
-      "none",0,"shaken","double","regular",{"2 cherries on a skewer","two cherries on a skewer","2 cherries"},false});
+      "none",0,"doubleShaken","double","regular",{"2 cherries on a skewer","two cherries on a skewer","2 cherries"},false});
 
 push({"PORN STAR MARTINI", {{"Absolut Vanilla Vodka",30},{"Passoa Passion Liqueur",30},{"Passionfruit puree",30},{"Lime juice",15},{"Prosecco",45}},
       "none",0,"shaken","double","none",{"1/2 passionfruit","half passionfruit","passionfruit half"},false});
@@ -57,8 +57,8 @@ push({"SPICY MARGARITA", {{"Altos Reposado",60},{"Lime juice",30},{"Chilli agave
 push({"APEROL SPRITZ", {{"Aperol",30},{"Prosecco",60}},
       "none",0,"build","na","regular",{"orange wedge"},false});
 
-push({"WHISKY SOUR", {{"Ballantines Scotch",60},{"Lemon juice",30},{"Sugar syrup",30}},
-      "none",0,"shaken","double","none",{"bitters hearts"},false});
+push({"WHISKY SOUR", {{"Ballantines Scotch",60},{"Lemon juice",30},{"Sugar syrup",15}},
+      "none",0,"doubleShaken","double","none",{"bitters hearts"},false});
 
 push({"TOMMY’S MARGARITA", {{"Olmeca Reposado",60},{"Lime juice",30},{"Crawleys Agave syrup",15}},
       "none",0,"shaken","double","large",{"lime wheel"},false});
@@ -76,7 +76,7 @@ push({"COSMOPOLITAN", {{"Absolut Citron Vodka",45},{"Cointreau",15},{"Cranberry 
 push({"SOUTHSIDE", {{"Beefeater Gin",60},{"Lime juice",20},{"Sugar syrup",20}},
       "none",0,"shaken","double","none",{"mint leaf"},false});
 
-push({"MOJITO", {{"Havana Club 3 Y/O Anos",60}},
+push({"MOJITO", {{"Havana Club 3 Y/O Anos",60},{"Lime",4},{"Brown Sugar", 1}},
       "none",0,"shaken","dump","crushed",{"mint sprig"},false}).method_steps = {
             "Add 4 lime wedges and 1 heaped barspoon brown sugar to glass.",
             "Muddle gently to express juice (don’t pulverize).",
@@ -88,8 +88,9 @@ push({"MOJITO", {{"Havana Club 3 Y/O Anos",60}},
 push({"PINA COLADA", {{"Havana Especial",60},{"Pineapple juice",60},{"Lime juice",30},{"Coco Real Cream of Coconut",30}},
       "none",0,"shaken","dump","crushed",{"2 pineapple fronds","two pineapple fronds"},false});
 
-push({"MOSCOW MULE", {{"Wyborowa Vodka",60}},
-      "none",0,"build","na","crushed",{"mint sprig - METHOD: Muddle 4 Lime wedges and vodka"},false});
+push({"MOSCOW MULE", {{"Wyborowa Vodka",60},{"Lime",4}},
+      "none",0,"build","na","crushed",{"mint sprig"},false}).method_note =
+      "Muddle 4 Lime wedges and vodka";
 
 push({"FRENCH MARTINI", {{"Wyborowa Vodka",30},{"Chambord",30},{"Pineapple juice",30}},
       "none",0,"shaken","double","none",{"none"},false});
@@ -98,7 +99,7 @@ push({"CHARLIE CHAPLAN", {{"Joseph Cartron Apricot Brandy",30},{"Plymouth Sloe G
       "none",0,"shaken","double","none",{"lime bow"},false});
 
 push({"CLOVER CLUB", {{"Beefeater Gin",45},{"Maidenii Dry Vermouth",15},{"Lemon juice",30},{"Raspberry syrup",15}},
-      "none",0,"shaken","double","none",{"three raspberries on a skewer","3 raspberries on a skewer"},false});
+      "none",0,"doubleShaken","double","none",{"three raspberries on a skewer","3 raspberries on a skewer"},false});
 
 push({"JAPANESE SLIPPER", {{"Midori",30},{"Cointreau",30},{"Lemon juice",30}},
       "none",0,"shaken","double","none",{"maraschino cherry"},false});
@@ -116,7 +117,7 @@ push({"CORPSE REVIVER #2", {{"Beefeater Gin",20},{"Lillet Blanc",20},{"Cointreau
       "none",0,"shaken","double","none",{"lemon twist"},false});
 
 push({"SLOE GIN SOUR", {{"Plymouth Sloe Gin",60},{"Lemon juice",15},{"Lime juice",15},{"Sugar syrup",20}},
-      "none",0,"shaken","double","none",{"none"},false});
+      "none",0,"doubleShaken","double","none",{"none"},false});
 
 push({"NAKED & FAMOUS", {{"Vida Mezcal",20},{"Yellow Chartreuse",20},{"Aperol",20},{"Lime juice",20}},
       "none",0,"shaken","double","none",{"thyme sprig"},false});
@@ -167,19 +168,22 @@ push({"BRAMBLE", {{"Beefeater Gin",50},{"Lemon juice",30},{"Sugar syrup",15},{"C
       "none",0,"shaken","single","crushed",{"chambord drizzle","measure and pour 10ml chambord"},false});
 
 push({"BLOODY MARY", {{"Wyborowa Vodka",60},{"Tomato juice",120},{"Lemon juice",15},{"Olive brine",20}},
-      "none",0,"build","na","regular",{"Add Celery Salt, Pepperm Tobasco, Worcestershire sauce, and various garnishes"},true});
+      "none",0,"build","na","regular",{"various garnishes"},true}).method_note =
+      "Add Celery Salt, Pepper, Tobasco, Worcestershire sauce";
 
 push({"GIMLET", {{"Beefeater Gin",60},{"Lime juice", 20},{"Sugar syrup",20}},
-      "none",0,"shaken","double","none",{"lime twist - Optional Lime Marmelade instead of Lime juice and sugar syrup"},false});
+      "none",0,"shaken","double","none",{"lime twist"},false}).method_note =
+      "Optional Lime Marmelade instead of Lime juice and sugar syrup";
 
 push({"GIN FIZZ", {{"Beefeater Gin",60},{"Lemon juice",20},{"Sugar syrup",15}},
-      "none",0,"shaken","double","none",{"Method: pour into glass ½ filled with soda, top with more soda if needed. "},false});
+      "none",0,"shaken","double","none",{"none"},false}).method_note =
+      "Method: pour into glass ½ filled with soda, top with more soda if needed.";
 
 push({"NEW YORK SOUR", {{"Jim Beam Rye",60},{"Lemon juice",30},{"Sugar syrup",15},{"House Red wine",30}},
       "none",0,"shaken","double","large",{"float red wine","red wine float"},false});
 
 push({"PISCO SOUR", {{"Pancho Pisco",60},{"Lime juice",30},{"Sugar syrup",30}},
-      "none",0,"shaken","double","none",{"bitters hearts"},false});
+      "none",0,"doubleShaken","double","none",{"bitters hearts"},false});
 
 push({"AVIATION", {{"Beefeater Gin",50},{"Luxardo Maraschino",10},{"Tempus Fugit Liqueur de Violettes",10},{"Lemon juice",20}},
       "none",0,"shaken","double","none",{"maraschino cherry"},false});
@@ -188,10 +192,12 @@ push({"ZOMBIE", {{"Havana Club 3 Y/O Anos",15},{"Havana Club Especial Rum",15},{
       "none",0,"shaken","dump","crushed",{"flaming citrus shell","half passionfruit or lime shell with flame"},false});
 
 push({"BOULEVARDIER", {{"Jim Beam Rye",40},{"Campari",20},{"Rosso Antico Sweet vermouth",20}},
-      "none",0,"stirred","single","large",{"orange twist - COCKTAIL IS THROWN NOT STIRRED"},false});
+      "none",0,"stirred","single","large",{"orange twist"},false}).method_note =
+      "COCKTAIL IS THROWN NOT STIRRED";
 
 push({"CAIPIRINHA", {{"Sagatiba Cachaca",60}},
-      "none",0,"build","na","crushed",{"lime wedge - METHOD: Muddle 4 Lime Wedges and 1 heaped barspoon of brown sugar with Cachaca"},false});
+      "none",0,"build","na","crushed",{"lime wedge"},false}).method_note =
+      "Muddle 4 Lime Wedges and 1 heaped barspoon of brown sugar with Cachaca";
 
 push({"TOM COLLINS", {{"Beefeater Gin",60},{"Lemon juice",30},{"Sugar syrup",15}},
       "none",0,"shaken","single","regular",{"lemon wedge"},false});
@@ -206,7 +212,8 @@ push({"JAPANESE STRIPPER", {{"Midori",30},{"Licor 43",30},{"Lemon juice",30}},
       "none",0,"shaken","double","none",{"maraschino cherry"},false});
 
 push({"CAPRIOSKA", {{"Wyborowa Vodka",60}},
-      "none",0,"build","na","crushed",{"lime wedge - METHOD: Muddle 4 Lime Wedges and 1 heaped barspoon of brown sugar with Vodka"},false});
+      "none",0,"build","na","crushed",{"lime wedge"},false}).method_note =
+      "Muddle 4 Lime Wedges and 1 heaped barspoon of brown sugar with Vodka";
 
 push({"BIJOU", {{"Beefeater Gin",30},{"Rosso Antico Sweet vermouth",15},{"Green Chartreuse",15}},
       "orange bitters",2,"shaken","single","none",{"orange twist"},false});
