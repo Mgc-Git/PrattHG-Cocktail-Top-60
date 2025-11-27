@@ -31,7 +31,7 @@ inline void seed_db(std::vector<Cocktail>& DB){
 
    // --- TOP 60 COCKTAILS (data only) ---
   push({"ESPRESSO MARTINI", {{"Wyborowa Vodka",30},{"Tia Maria",30},{"Little Dripper",30},{"Sugar syrup",15}},
-      "none",0,"doubleShaken","double","none",{"grated chocolate","three coffee beans","3 coffee beans"},false});
+      "none",0,"double Shaken","double","none",{"grated chocolate","three coffee beans","3 coffee beans"},false});
 
 push({"NEGRONI", {{"Beefeater Gin",30},{"Campari",30},{"Rosso Antico Sweet Vermouth",30}},
       "none",0,"stirred","single","large",{"orange peel","orange twist"},false});
