@@ -8,7 +8,7 @@ struct Cocktail {
   std::vector<Ingredient> alcohols;
   std::string bitters;  // "none" | "angostura bitters" | "orange bitters" | "peychaud’s bitters"
   int dashes;
-  std::string method;   // "shaken" | "doubleShaken" | "stirred" | "build" 
+  std::string method;   // "shaken" | "double Shaken" | "stirred" | "build" 
   std::string strain;   // "single" | "double" | "dump" | "na"
   std::string ice;      // "none" | "regular" | "crushed" | "large"
   std::vector<std::string> garnish;
