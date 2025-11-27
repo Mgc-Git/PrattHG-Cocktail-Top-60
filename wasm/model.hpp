@@ -21,5 +21,6 @@ struct Cocktail {
   bool with_grapefruit_soda = false;
 
   std::string method_note;                 // short freeform note (1 paragraph)
+  std::vector<std::string> method_steps; 
 };
 #endif
