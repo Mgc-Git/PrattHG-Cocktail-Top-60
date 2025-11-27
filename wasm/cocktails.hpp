@@ -24,7 +24,10 @@ static inline void apply_extras(std::vector<Cocktail>& DB){
 
 inline void seed_db(std::vector<Cocktail>& DB){
   if (!DB.empty()) return;
-  auto push = [&](Cocktail c){ DB.push_back(std::move(c)); };
+  auto push = [&](Cocktail c) -> Cocktail& {
+      DB.push_back(std::move(c));
+      return DB.back();
+  };
 
    // --- TOP 60 COCKTAILS (data only) ---
   push({"ESPRESSO MARTINI", {{"Wyborowa Vodka",30},{"Tia Maria",30},{"Little Dripper",30},{"Sugar syrup",15}},
