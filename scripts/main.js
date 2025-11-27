@@ -215,6 +215,13 @@ function arraysEqualAsMultisets(user, expected){
   return true;
 }
 
+function normalizeMethod(v){
+  // lower, strip spaces and hyphens, collapse synonyms
+  const x = (v || '').toLowerCase().replace(/[\s-]+/g, '');
+  if (x === 'buildinglass') return 'build';
+  return x; // 'shaken', 'stirred', 'doubleshaken', 'build'
+}
+
 function showResult(ok, diffs, key){
   const res = $('#result');
   const status = $('#result-status');
@@ -301,11 +308,17 @@ function compareAgainstKey(key){
   const userMethod = document.querySelector('input[name="method"]:checked')?.value || '';
   const userStrain = document.querySelector('input[name="strain"]:checked')?.value || '';
 
-  if (!sameText(userMethod, key.method)) {
-    diffs.push(`Method should be "${key.method === 'build' ? 'build in glass' : key.method}".`);
+  if (normalizeMethod(userMethod) !== normalizeMethod(key.method)) {
+    // pretty message for users
+    const pretty = (() => {
+      const k = normalizeMethod(key.method);
+      if (k === 'build') return 'build in glass';
+      if (k === 'doubleshaken') return 'Double Shaken';
+      return key.method; // shaken/stirred already fine
+    })();
+    diffs.push(`Method should be "${pretty}".`);
   } else {
-    // If the method is BUILD, don't grade strain at all (strain not applicable)
-    if (!sameText(key.method, 'build')) {
+    if (normalizeMethod(key.method) !== 'build') {
       if (!sameText(userStrain, key.strain)) {
         diffs.push(`Strain should be "${key.strain || 'none'}".`);
       }
